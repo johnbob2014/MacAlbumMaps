@@ -7,21 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76B3381E567CD2003BED65 /* MediaMapVC.swift */; };
+		4B76B34D1E5685D6003BED65 /* MAMCoreDataAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76B34C1E5685D6003BED65 /* MAMCoreDataAssistant.swift */; };
 		4B8FB5AC1E554EFB00400F58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8FB5AB1E554EFB00400F58 /* AppDelegate.swift */; };
-		4B8FB5AE1E554EFB00400F58 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8FB5AD1E554EFB00400F58 /* ViewController.swift */; };
 		4B8FB5B11E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4B8FB5AF1E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld */; };
 		4B8FB5B31E554EFB00400F58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B8FB5B21E554EFB00400F58 /* Assets.xcassets */; };
 		4B8FB5B61E554EFB00400F58 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B8FB5B41E554EFB00400F58 /* Main.storyboard */; };
+		4B8FB5BE1E554F6500400F58 /* GCMediaLibraryLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8FB5BD1E554F6500400F58 /* GCMediaLibraryLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4B76B3381E567CD2003BED65 /* MediaMapVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaMapVC.swift; sourceTree = "<group>"; };
+		4B76B34C1E5685D6003BED65 /* MAMCoreDataAssistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAMCoreDataAssistant.swift; sourceTree = "<group>"; };
 		4B8FB5A81E554EFB00400F58 /* MacAlbumMaps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacAlbumMaps.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B8FB5AB1E554EFB00400F58 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4B8FB5AD1E554EFB00400F58 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4B8FB5B01E554EFB00400F58 /* MacAlbumMaps.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MacAlbumMaps.xcdatamodel; sourceTree = "<group>"; };
 		4B8FB5B21E554EFB00400F58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B8FB5B51E554EFB00400F58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4B8FB5B71E554EFB00400F58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4B8FB5BD1E554F6500400F58 /* GCMediaLibraryLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCMediaLibraryLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,11 +59,13 @@
 			isa = PBXGroup;
 			children = (
 				4B8FB5AB1E554EFB00400F58 /* AppDelegate.swift */,
-				4B8FB5AD1E554EFB00400F58 /* ViewController.swift */,
 				4B8FB5B21E554EFB00400F58 /* Assets.xcassets */,
 				4B8FB5B41E554EFB00400F58 /* Main.storyboard */,
 				4B8FB5B71E554EFB00400F58 /* Info.plist */,
 				4B8FB5AF1E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld */,
+				4B8FB5BD1E554F6500400F58 /* GCMediaLibraryLoader.swift */,
+				4B76B3381E567CD2003BED65 /* MediaMapVC.swift */,
+				4B76B34C1E5685D6003BED65 /* MAMCoreDataAssistant.swift */,
 			);
 			path = MacAlbumMaps;
 			sourceTree = "<group>";
@@ -137,8 +143,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B8FB5B11E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld in Sources */,
-				4B8FB5AE1E554EFB00400F58 /* ViewController.swift in Sources */,
 				4B8FB5AC1E554EFB00400F58 /* AppDelegate.swift in Sources */,
+				4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */,
+				4B8FB5BE1E554F6500400F58 /* GCMediaLibraryLoader.swift in Sources */,
+				4B76B34D1E5685D6003BED65 /* MAMCoreDataAssistant.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,6 +301,7 @@
 				4B8FB5BC1E554EFB00400F58 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
