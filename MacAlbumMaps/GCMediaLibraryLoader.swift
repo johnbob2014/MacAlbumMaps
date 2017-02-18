@@ -107,8 +107,30 @@ class GCMediaLibraryLoader: NSObject {
                         }
                         */
                         
+                        if let DateAsTimerInterval = attrs[MLMediaObjectHiddenAttributeKeys.DateAsTimerIntervalKey]{
+                            print(DateAsTimerInterval)
+                        }
+                        
                         if let FaceList = attrs[MLMediaObjectHiddenAttributeKeys.FaceListKey]{
                             print(FaceList)
+                            let array = FaceList as! NSArray
+                            let dic = array.firstObject as! NSDictionary
+                            
+                            let faceKey = dic["faceKey"] as! String
+                            print(faceKey)
+                            
+                            let faceTileImageURL = dic["faceTileImageURL"] as! NSURL
+                            print(faceTileImageURL.absoluteString!)
+                            
+                            let index = dic["index"] as! NSNumber
+                            print(index)
+                            
+                            let name = dic["name"] as! String
+                            print(name)
+                            
+                            let rectangle = dic["rectangle"] as! String
+                            print(rectangle)
+                            
                         }
                         
                         isValidImage = true
@@ -186,9 +208,9 @@ class GCMediaLibraryLoader: NSObject {
                 }
             }
             
-            //print(keyArray)
+            print(keyArray)
             
-            //print(self.validMediaObjects.count)
+            print(self.validMediaObjects.count)
             
             if (self.loadCompleteHandler != nil) {
                 self.loadCompleteHandler!(self.validMediaObjects)

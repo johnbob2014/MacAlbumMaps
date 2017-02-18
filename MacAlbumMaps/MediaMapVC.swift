@@ -21,7 +21,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         
         self.initMapView()
         
-        //self.initData()
+        self.initData()
         //let ainfo = CoordinateInfo.create(CLLocation.init(latitude: 25.5, longitude: 30.5))
         
 //        CoordinateInfo.deleteAll()
@@ -43,11 +43,13 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         //print(ainfo)
         
 //        self.initData()
-        MLMediaObject.
-        let firstInfo = CoordinateInfo.fetchAll()?.first
+        //MLMediaObject.
+        if let firstInfo = CoordinateInfo.fetchAll()?.first{
+            self.mainMapView.addAnnotation(firstInfo)
+            self.mainMapView.showAnnotations([firstInfo], animated: true)
+        }
         
-        self.mainMapView.addAnnotation(firstInfo!)
-        self.mainMapView.showAnnotations([firstInfo!], animated: true)
+        
  
     }
     
@@ -67,7 +69,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
                 let latitude = (mediaObject.attributes[MLMediaObjectHiddenAttributeKeys.latitudeKey] as! NSNumber).doubleValue
                 let longitude = (mediaObject.attributes[MLMediaObjectHiddenAttributeKeys.longitudeKey] as! NSNumber).doubleValue
                 
-                let aInfo = CoordinateInfo.create(latitude, longitude)
+                //let aInfo = CoordinateInfo.create(latitude, longitude)
             }
             
             
