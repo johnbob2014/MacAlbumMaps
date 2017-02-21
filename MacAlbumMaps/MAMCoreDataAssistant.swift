@@ -12,8 +12,24 @@ import CoreLocation
 import MapKit
 
 let EntityName_CoordinateInfo = "CoordinateInfo"
-let appContext = AppDelegate().managedObjectContext
 
+extension CoordinateInfo : MKAnnotation{
+    
+    // MARK: - MKAnnotation Protocol
+    public var coordinate: CLLocationCoordinate2D {
+        return CLLocationCoordinate2DMake((self.latitude?.doubleValue)!, (self.longitude?.doubleValue)!)
+    }
+
+}
+
+extension MediaInfo : MKAnnotation{
+    
+    // MARK: - MKAnnotation Protocol
+    public var coordinate: CLLocationCoordinate2D {
+        return (self.coordinateInfo?.coordinate)!
+    }
+    
+}
 /*
 extension CoordinateInfo : MKAnnotation{
     

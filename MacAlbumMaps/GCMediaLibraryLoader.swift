@@ -216,6 +216,8 @@ class GCMediaLibraryLoader: NSObject {
                 self.loadCompleteHandler!(self.validMediaObjects)
             }
             
+            // 获取数据后便移除观察
+            self.mediaLibrary.removeObserver(self, forKeyPath: MLMediaLibraryPropertyKeys.mediaSourcesKey, context: &mediaSourcesContext)
         }else{
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }

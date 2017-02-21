@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		3D6B5AB6A20AF244E2674E9F /* Pods_MacAlbumMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BEBD2E7F4F52E4B845D5AEA /* Pods_MacAlbumMaps.framework */; };
 		4B3361F21E5ACC59009F95ED /* GCLocationAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3361F11E5ACC59009F95ED /* GCLocationAnalyser.swift */; };
+		4B339BD71E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BCE1E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift */; };
+		4B339BDA1E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BD11E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift */; };
+		4B339BDD1E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BD41E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift */; };
 		4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76B3381E567CD2003BED65 /* MediaMapVC.swift */; };
 		4B76B34D1E5685D6003BED65 /* MAMCoreDataAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76B34C1E5685D6003BED65 /* MAMCoreDataAssistant.swift */; };
 		4B8FB5AC1E554EFB00400F58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8FB5AB1E554EFB00400F58 /* AppDelegate.swift */; };
@@ -20,6 +23,9 @@
 
 /* Begin PBXFileReference section */
 		4B3361F11E5ACC59009F95ED /* GCLocationAnalyser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCLocationAnalyser.swift; sourceTree = "<group>"; };
+		4B339BCE1E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoordinateInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
+		4B339BD11E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
+		4B339BD41E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MediaInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
 		4B76B3381E567CD2003BED65 /* MediaMapVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaMapVC.swift; sourceTree = "<group>"; };
 		4B76B34C1E5685D6003BED65 /* MAMCoreDataAssistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAMCoreDataAssistant.swift; sourceTree = "<group>"; };
 		4B8FB5A81E554EFB00400F58 /* MacAlbumMaps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacAlbumMaps.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,6 +61,16 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		4B339BCD1E5C131F00401B0C /* AlecrimCoreData */ = {
+			isa = PBXGroup;
+			children = (
+				4B339BCE1E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift */,
+				4B339BD11E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift */,
+				4B339BD41E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift */,
+			);
+			path = AlecrimCoreData;
+			sourceTree = "<group>";
+		};
 		4B8FB59F1E554EFB00400F58 = {
 			isa = PBXGroup;
 			children = (
@@ -76,6 +92,7 @@
 		4B8FB5AA1E554EFB00400F58 /* MacAlbumMaps */ = {
 			isa = PBXGroup;
 			children = (
+				4B339BCD1E5C131F00401B0C /* AlecrimCoreData */,
 				4B8FB5AB1E554EFB00400F58 /* AppDelegate.swift */,
 				4B8FB5B21E554EFB00400F58 /* Assets.xcassets */,
 				4B8FB5B41E554EFB00400F58 /* Main.storyboard */,
@@ -225,7 +242,10 @@
 				4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */,
 				4B8FB5BE1E554F6500400F58 /* GCMediaLibraryLoader.swift in Sources */,
 				4B76B34D1E5685D6003BED65 /* MAMCoreDataAssistant.swift in Sources */,
+				4B339BD71E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift in Sources */,
+				4B339BDD1E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift in Sources */,
 				4B3361F21E5ACC59009F95ED /* GCLocationAnalyser.swift in Sources */,
+				4B339BDA1E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +358,7 @@
 			baseConfigurationReference = 8975812DC64039374319AC5B /* Pods-MacAlbumMaps.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 9R3WHNFTF3;
 				INFOPLIST_FILE = MacAlbumMaps/Info.plist;
@@ -353,6 +374,7 @@
 			baseConfigurationReference = 6826725DC6F90CA237FDBBDA /* Pods-MacAlbumMaps.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 9R3WHNFTF3;
 				INFOPLIST_FILE = MacAlbumMaps/Info.plist;
