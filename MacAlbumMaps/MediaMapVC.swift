@@ -44,10 +44,10 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         
 //        self.initData()
         //MLMediaObject.
-        if let firstInfo = CoordinateInfo.fetchAll()?.first{
-            self.mainMapView.addAnnotation(firstInfo)
-            self.mainMapView.showAnnotations([firstInfo], animated: true)
-        }
+//        if let firstInfo = CoordinateInfo.fetchAll()?.first{
+//            self.mainMapView.addAnnotation(firstInfo)
+//            self.mainMapView.showAnnotations([firstInfo], animated: true)
+//        }
         
         
  
@@ -68,6 +68,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
             for mediaObject in loadedMediaObjects {
                 let latitude = (mediaObject.attributes[MLMediaObjectHiddenAttributeKeys.latitudeKey] as! NSNumber).doubleValue
                 let longitude = (mediaObject.attributes[MLMediaObjectHiddenAttributeKeys.longitudeKey] as! NSNumber).doubleValue
+                
                 
                 //let aInfo = CoordinateInfo.create(latitude, longitude)
             }

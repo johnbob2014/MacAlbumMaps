@@ -14,6 +14,7 @@ import MapKit
 let EntityName_CoordinateInfo = "CoordinateInfo"
 let appContext = AppDelegate().managedObjectContext
 
+/*
 extension CoordinateInfo : MKAnnotation{
     
     // MARK: - MKAnnotation Protocol
@@ -130,3 +131,4 @@ extension CoordinateInfo : MKAnnotation{
         }
     }
 }
+*/

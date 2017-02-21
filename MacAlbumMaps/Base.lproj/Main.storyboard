@@ -670,6 +670,19 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="400" y="300" width="960" height="540"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                        <toolbar key="toolbar" implicitIdentifier="BCD286D4-3FBE-4BBC-925D-BCB2C602A1BA" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="zcj-Dx-MLY">
+                            <allowedToolbarItems>
+                                <toolbarItem implicitItemIdentifier="NSToolbarShowColorsItem" id="ABW-oN-g3P"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarShowFontsItem" id="16U-xE-r7U"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="iZR-hz-qnm"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="dbZ-FW-SJt"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="N52-32-shI"/>
+                            </allowedToolbarItems>
+                            <defaultToolbarItems>
+                                <toolbarItem reference="ABW-oN-g3P"/>
+                                <toolbarItem reference="N52-32-shI"/>
+                            </defaultToolbarItems>
+                        </toolbar>
                     </window>
                     <connections>
                         <segue destination="XfG-lQ-9wD" kind="relationship" relationship="window.shadowedContentViewController" id="cq2-FE-JQM"/>
@@ -704,7 +717,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="829"/>
+            <point key="canvasLocation" x="74" y="992"/>
         </scene>
     </scenes>
 </document>

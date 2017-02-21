@@ -69,7 +69,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
             let url = self.applicationDocumentsDirectory.appendingPathComponent("MacAlbumMaps.storedata")
             do {
-                try coordinator!.addPersistentStore(ofType: NSXMLStoreType, configurationName: nil, at: url, options: nil)
+                let options = [NSMigratePersistentStoresAutomaticallyOption:true,
+                               NSInferMappingModelAutomaticallyOption:true]
+                
+                try coordinator!.addPersistentStore(ofType: NSXMLStoreType, configurationName: nil, at: url, options: options)
             } catch {
                 // Replace this implementation with code to handle the error appropriately.
                  
