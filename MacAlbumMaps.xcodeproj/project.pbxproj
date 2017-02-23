@@ -8,33 +8,39 @@
 
 /* Begin PBXBuildFile section */
 		3D6B5AB6A20AF244E2674E9F /* Pods_MacAlbumMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BEBD2E7F4F52E4B845D5AEA /* Pods_MacAlbumMaps.framework */; };
-		4B3361F21E5ACC59009F95ED /* GCLocationAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3361F11E5ACC59009F95ED /* GCLocationAnalyser.swift */; };
+		4B2E3D651E5EE031003A913B /* MAMSettingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2E3D641E5EE031003A913B /* MAMSettingManager.swift */; };
 		4B339BD71E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BCE1E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift */; };
 		4B339BDA1E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BD11E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift */; };
 		4B339BDD1E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BD41E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift */; };
+		4B656F471E5D0C1F0074BFA1 /* MAMCoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B656F461E5D0C1F0074BFA1 /* MAMCoreDataManager.swift */; };
 		4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76B3381E567CD2003BED65 /* MediaMapVC.swift */; };
-		4B76B34D1E5685D6003BED65 /* MAMCoreDataAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76B34C1E5685D6003BED65 /* MAMCoreDataAssistant.swift */; };
+		4B88D0831E5E8A6D008A69BC /* MediaGroupAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D0821E5E8A6D008A69BC /* MediaGroupAnnotation.swift */; };
+		4B88D0881E5E8ADE008A69BC /* GCLocationAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D0861E5E8ADE008A69BC /* GCLocationAnalyser.swift */; };
+		4B88D0891E5E8ADE008A69BC /* GCMediaLibraryLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D0871E5E8ADE008A69BC /* GCMediaLibraryLoader.swift */; };
+		4B88D08B1E5E90B4008A69BC /* FootprintAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D08A1E5E90B4008A69BC /* FootprintAnnotation.swift */; };
 		4B8FB5AC1E554EFB00400F58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8FB5AB1E554EFB00400F58 /* AppDelegate.swift */; };
 		4B8FB5B11E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4B8FB5AF1E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld */; };
 		4B8FB5B31E554EFB00400F58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B8FB5B21E554EFB00400F58 /* Assets.xcassets */; };
 		4B8FB5B61E554EFB00400F58 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B8FB5B41E554EFB00400F58 /* Main.storyboard */; };
-		4B8FB5BE1E554F6500400F58 /* GCMediaLibraryLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8FB5BD1E554F6500400F58 /* GCMediaLibraryLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4B3361F11E5ACC59009F95ED /* GCLocationAnalyser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCLocationAnalyser.swift; sourceTree = "<group>"; };
+		4B2E3D641E5EE031003A913B /* MAMSettingManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MAMSettingManager.swift; path = MAMModels/MAMSettingManager.swift; sourceTree = "<group>"; };
 		4B339BCE1E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoordinateInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
 		4B339BD11E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
 		4B339BD41E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MediaInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
+		4B656F461E5D0C1F0074BFA1 /* MAMCoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAMCoreDataManager.swift; sourceTree = "<group>"; };
 		4B76B3381E567CD2003BED65 /* MediaMapVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaMapVC.swift; sourceTree = "<group>"; };
-		4B76B34C1E5685D6003BED65 /* MAMCoreDataAssistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAMCoreDataAssistant.swift; sourceTree = "<group>"; };
-		4B8FB5A81E554EFB00400F58 /* MacAlbumMaps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacAlbumMaps.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B88D0821E5E8A6D008A69BC /* MediaGroupAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaGroupAnnotation.swift; path = MAMModels/MediaGroupAnnotation.swift; sourceTree = "<group>"; };
+		4B88D0861E5E8ADE008A69BC /* GCLocationAnalyser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCLocationAnalyser.swift; sourceTree = "<group>"; };
+		4B88D0871E5E8ADE008A69BC /* GCMediaLibraryLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCMediaLibraryLoader.swift; sourceTree = "<group>"; };
+		4B88D08A1E5E90B4008A69BC /* FootprintAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FootprintAnnotation.swift; path = MAMModels/FootprintAnnotation.swift; sourceTree = "<group>"; };
+		4B8FB5A81E554EFB00400F58 /* MacAlbumMaps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MacAlbumMaps.app; path = "/Users/BobZhang/编程/100macOS/MacAlbumMaps/build/Debug/MacAlbumMaps.app"; sourceTree = "<absolute>"; };
 		4B8FB5AB1E554EFB00400F58 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4B8FB5B01E554EFB00400F58 /* MacAlbumMaps.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MacAlbumMaps.xcdatamodel; sourceTree = "<group>"; };
 		4B8FB5B21E554EFB00400F58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B8FB5B51E554EFB00400F58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4B8FB5B71E554EFB00400F58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4B8FB5BD1E554F6500400F58 /* GCMediaLibraryLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCMediaLibraryLoader.swift; sourceTree = "<group>"; };
 		6826725DC6F90CA237FDBBDA /* Pods-MacAlbumMaps.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacAlbumMaps.release.xcconfig"; path = "Pods/Target Support Files/Pods-MacAlbumMaps/Pods-MacAlbumMaps.release.xcconfig"; sourceTree = "<group>"; };
 		8975812DC64039374319AC5B /* Pods-MacAlbumMaps.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacAlbumMaps.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MacAlbumMaps/Pods-MacAlbumMaps.debug.xcconfig"; sourceTree = "<group>"; };
 		9BEBD2E7F4F52E4B845D5AEA /* Pods_MacAlbumMaps.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MacAlbumMaps.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,6 +70,7 @@
 		4B339BCD1E5C131F00401B0C /* AlecrimCoreData */ = {
 			isa = PBXGroup;
 			children = (
+				4B656F461E5D0C1F0074BFA1 /* MAMCoreDataManager.swift */,
 				4B339BCE1E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift */,
 				4B339BD11E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift */,
 				4B339BD41E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift */,
@@ -71,37 +78,46 @@
 			path = AlecrimCoreData;
 			sourceTree = "<group>";
 		};
+		4B88D0841E5E8A75008A69BC /* MAMModels */ = {
+			isa = PBXGroup;
+			children = (
+				4B2E3D641E5EE031003A913B /* MAMSettingManager.swift */,
+				4B88D0821E5E8A6D008A69BC /* MediaGroupAnnotation.swift */,
+				4B88D08A1E5E90B4008A69BC /* FootprintAnnotation.swift */,
+			);
+			name = MAMModels;
+			sourceTree = "<group>";
+		};
+		4B88D0851E5E8ADE008A69BC /* GenericClasses */ = {
+			isa = PBXGroup;
+			children = (
+				4B88D0861E5E8ADE008A69BC /* GCLocationAnalyser.swift */,
+				4B88D0871E5E8ADE008A69BC /* GCMediaLibraryLoader.swift */,
+			);
+			path = GenericClasses;
+			sourceTree = "<group>";
+		};
 		4B8FB59F1E554EFB00400F58 = {
 			isa = PBXGroup;
 			children = (
 				4B8FB5AA1E554EFB00400F58 /* MacAlbumMaps */,
-				4B8FB5A91E554EFB00400F58 /* Products */,
 				0B09E196C83B2F202F3AAD68 /* Pods */,
 				D4C260E6018A492B02384509 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		4B8FB5A91E554EFB00400F58 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				4B8FB5A81E554EFB00400F58 /* MacAlbumMaps.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		4B8FB5AA1E554EFB00400F58 /* MacAlbumMaps */ = {
 			isa = PBXGroup;
 			children = (
+				4B88D0851E5E8ADE008A69BC /* GenericClasses */,
+				4B88D0841E5E8A75008A69BC /* MAMModels */,
 				4B339BCD1E5C131F00401B0C /* AlecrimCoreData */,
 				4B8FB5AB1E554EFB00400F58 /* AppDelegate.swift */,
 				4B8FB5B21E554EFB00400F58 /* Assets.xcassets */,
 				4B8FB5B41E554EFB00400F58 /* Main.storyboard */,
 				4B8FB5B71E554EFB00400F58 /* Info.plist */,
 				4B8FB5AF1E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld */,
-				4B8FB5BD1E554F6500400F58 /* GCMediaLibraryLoader.swift */,
-				4B3361F11E5ACC59009F95ED /* GCLocationAnalyser.swift */,
 				4B76B3381E567CD2003BED65 /* MediaMapVC.swift */,
-				4B76B34C1E5685D6003BED65 /* MAMCoreDataAssistant.swift */,
 			);
 			path = MacAlbumMaps;
 			sourceTree = "<group>";
@@ -163,7 +179,7 @@
 				Base,
 			);
 			mainGroup = 4B8FB59F1E554EFB00400F58;
-			productRefGroup = 4B8FB5A91E554EFB00400F58 /* Products */;
+			productRefGroup = 4B8FB59F1E554EFB00400F58;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -238,13 +254,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B8FB5B11E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld in Sources */,
+				4B88D08B1E5E90B4008A69BC /* FootprintAnnotation.swift in Sources */,
+				4B88D0891E5E8ADE008A69BC /* GCMediaLibraryLoader.swift in Sources */,
+				4B88D0831E5E8A6D008A69BC /* MediaGroupAnnotation.swift in Sources */,
 				4B8FB5AC1E554EFB00400F58 /* AppDelegate.swift in Sources */,
 				4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */,
-				4B8FB5BE1E554F6500400F58 /* GCMediaLibraryLoader.swift in Sources */,
-				4B76B34D1E5685D6003BED65 /* MAMCoreDataAssistant.swift in Sources */,
 				4B339BD71E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift in Sources */,
+				4B88D0881E5E8ADE008A69BC /* GCLocationAnalyser.swift in Sources */,
+				4B656F471E5D0C1F0074BFA1 /* MAMCoreDataManager.swift in Sources */,
 				4B339BDD1E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift in Sources */,
-				4B3361F21E5ACC59009F95ED /* GCLocationAnalyser.swift in Sources */,
+				4B2E3D651E5EE031003A913B /* MAMSettingManager.swift in Sources */,
 				4B339BDA1E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

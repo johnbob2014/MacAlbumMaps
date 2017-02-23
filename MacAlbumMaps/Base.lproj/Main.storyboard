@@ -670,19 +670,6 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="400" y="300" width="960" height="540"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
-                        <toolbar key="toolbar" implicitIdentifier="BCD286D4-3FBE-4BBC-925D-BCB2C602A1BA" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="zcj-Dx-MLY">
-                            <allowedToolbarItems>
-                                <toolbarItem implicitItemIdentifier="NSToolbarShowColorsItem" id="ABW-oN-g3P"/>
-                                <toolbarItem implicitItemIdentifier="NSToolbarShowFontsItem" id="16U-xE-r7U"/>
-                                <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="iZR-hz-qnm"/>
-                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="dbZ-FW-SJt"/>
-                                <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="N52-32-shI"/>
-                            </allowedToolbarItems>
-                            <defaultToolbarItems>
-                                <toolbarItem reference="ABW-oN-g3P"/>
-                                <toolbarItem reference="N52-32-shI"/>
-                            </defaultToolbarItems>
-                        </toolbar>
                     </window>
                     <connections>
                         <segue destination="XfG-lQ-9wD" kind="relationship" relationship="window.shadowedContentViewController" id="cq2-FE-JQM"/>
@@ -700,19 +687,162 @@
                         <rect key="frame" x="0.0" y="0.0" width="960" height="540"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <mapView mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zOE-XT-KvC">
+                            <splitView arrangesAllSubviews="NO" dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TgL-c1-vkH">
                                 <rect key="frame" x="0.0" y="0.0" width="960" height="540"/>
-                            </mapView>
+                                <subviews>
+                                    <customView misplaced="YES" id="Q4n-DP-ay0">
+                                        <rect key="frame" x="0.0" y="0.0" width="210" height="540"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <subviews>
+                                            <tabView translatesAutoresizingMaskIntoConstraints="NO" id="Vxj-5A-194">
+                                                <rect key="frame" x="-7" y="-10" width="231" height="556"/>
+                                                <font key="font" metaFont="system"/>
+                                                <tabViewItems>
+                                                    <tabViewItem label="Moment" identifier="1" id="CGq-OA-nh7">
+                                                        <view key="view" id="kIz-Rd-hVe">
+                                                            <rect key="frame" x="10" y="33" width="211" height="510"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HAv-tT-fSW">
+                                                                    <rect key="frame" x="17" y="490" width="35" height="17"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="From" id="sBj-C8-UG9">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="laC-Ii-wWv">
+                                                                    <rect key="frame" x="17" y="403" width="180" height="27"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="its-az-yCR">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                                                            <!--1982-02-12 08:00:00 -0800-->
+                                                                            <timeZone key="timeZone" name="US/Pacific"/>
+                                                                        </calendarDate>
+                                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
+                                                                    </datePickerCell>
+                                                                </datePicker>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ad9-hA-afI">
+                                                                    <rect key="frame" x="17" y="434" width="19" height="17"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="To" id="Jo6-vU-BMx">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xdG-yI-bFb">
+                                                                    <rect key="frame" x="17" y="459" width="180" height="27"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="zfb-XD-aQK">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <calendarDate key="date" timeIntervalSinceReferenceDate="-595929600" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                                                            <!--1982-02-12 08:00:00 -0800-->
+                                                                            <timeZone key="timeZone" name="US/Pacific"/>
+                                                                        </calendarDate>
+                                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
+                                                                    </datePickerCell>
+                                                                </datePicker>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mY6-9z-F3u">
+                                                                    <rect key="frame" x="17" y="378" width="100" height="17"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Merge Distance" id="fvI-Ho-v0B">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z2p-dY-eza">
+                                                                    <rect key="frame" x="17" y="348" width="111" height="22"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="HRg-Re-t9b">
+                                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="omn-a5-gVq"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A6t-W4-Nup">
+                                                                    <rect key="frame" x="134" y="350" width="16" height="17"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="m" id="BJu-rl-rzG">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mYl-k3-8pj">
+                                                                    <rect key="frame" x="76" y="259" width="58" height="32"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="push" title="Go" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FWo-Cx-jjO">
+                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="momentBtnTD:" target="XfG-lQ-9wD" id="fYu-lo-NCY"/>
+                                                                    </connections>
+                                                                </button>
+                                                            </subviews>
+                                                        </view>
+                                                    </tabViewItem>
+                                                    <tabViewItem label="Location" identifier="2" id="S04-pv-JxN">
+                                                        <view key="view" id="hwP-E0-AFJ">
+                                                            <rect key="frame" x="10" y="33" width="211" height="510"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        </view>
+                                                    </tabViewItem>
+                                                    <tabViewItem label="Browser" identifier="" id="vs4-5a-ciO">
+                                                        <view key="view" id="Lzq-BV-PkT">
+                                                            <rect key="frame" x="10" y="33" width="211" height="510"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        </view>
+                                                    </tabViewItem>
+                                                </tabViewItems>
+                                            </tabView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="Vxj-5A-194" secondAttribute="trailing" id="24z-wl-aoC"/>
+                                            <constraint firstAttribute="bottom" secondItem="Vxj-5A-194" secondAttribute="bottom" id="Qqj-Az-QUZ"/>
+                                            <constraint firstItem="Vxj-5A-194" firstAttribute="leading" secondItem="Q4n-DP-ay0" secondAttribute="leading" id="UNd-US-zDo"/>
+                                            <constraint firstItem="Vxj-5A-194" firstAttribute="top" secondItem="Q4n-DP-ay0" secondAttribute="top" id="rfH-CK-8Xd"/>
+                                        </constraints>
+                                    </customView>
+                                    <customView fixedFrame="YES" id="laf-Hr-9Lv">
+                                        <rect key="frame" x="220" y="0.0" width="740" height="540"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <subviews>
+                                            <mapView fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zOE-XT-KvC">
+                                                <rect key="frame" x="0.0" y="0.0" width="740" height="540"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                            </mapView>
+                                        </subviews>
+                                    </customView>
+                                </subviews>
+                                <holdingPriorities>
+                                    <real value="325"/>
+                                    <real value="250"/>
+                                </holdingPriorities>
+                            </splitView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="zOE-XT-KvC" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="V3z-ZW-fee"/>
-                            <constraint firstAttribute="trailing" secondItem="zOE-XT-KvC" secondAttribute="trailing" id="dLx-Nw-fBf"/>
-                            <constraint firstItem="zOE-XT-KvC" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="w1A-XC-hXU"/>
-                            <constraint firstAttribute="bottom" secondItem="zOE-XT-KvC" secondAttribute="bottom" id="y4N-q3-4bl"/>
+                            <constraint firstAttribute="bottom" secondItem="TgL-c1-vkH" secondAttribute="bottom" id="QfO-fj-8HG"/>
+                            <constraint firstItem="TgL-c1-vkH" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="WHQ-3r-el3"/>
+                            <constraint firstItem="TgL-c1-vkH" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="hUG-yh-dkC"/>
+                            <constraint firstAttribute="trailing" secondItem="TgL-c1-vkH" secondAttribute="trailing" id="n1A-Hs-SFJ"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="endDatePicker" destination="laC-Ii-wWv" id="jwI-ig-XAd"/>
                         <outlet property="mainMapView" destination="zOE-XT-KvC" id="dTW-nC-jvt"/>
+                        <outlet property="mergeDistanceForMomentTF" destination="z2p-dY-eza" id="5sy-ju-u7c"/>
+                        <outlet property="momentBtn" destination="mYl-k3-8pj" id="Ue6-qm-7H8"/>
+                        <outlet property="startDatePicker" destination="xdG-yI-bFb" id="9Ti-NU-fjo"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

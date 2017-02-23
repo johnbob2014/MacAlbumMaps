@@ -66,7 +66,7 @@
     </entity>
     <elements>
         <element name="CoordinateInfo" positionX="3555" positionY="2808" width="128" height="463"/>
-        <element name="MediaInfo" positionX="3888" positionY="2928" width="128" height="298"/>
         <element name="FootprintsRepositoryInfo" positionX="3726" positionY="3024" width="128" height="240"/>
+        <element name="MediaInfo" positionX="3888" positionY="2928" width="128" height="300"/>
     </elements>
 </model>

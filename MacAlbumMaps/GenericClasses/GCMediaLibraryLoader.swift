@@ -48,7 +48,7 @@ class GCMediaLibraryLoader: NSObject {
     private var mediaObjectsContext = 3
     
     public var loadCompleteHandler : LoadCompleteHandler?
-    public var validMediaObjects: [MLMediaObject] = []
+    //public var validMediaObjects: [MLMediaObject] = []
     
     // MLMediaLibrary instances for loading the photos.
     private var mediaLibrary: MLMediaLibrary!
@@ -78,79 +78,7 @@ class GCMediaLibraryLoader: NSObject {
                 print("removeObserver")
     }
     
-    // MARK: - Utilities
-    
-    /// Helps to make sure the media object is the photo format we want.
-    private func isValidImage(_ mediaObject: MLMediaObject) -> Bool{
-        var isValidImage = false
         
-        let attrs = mediaObject.attributes
-        let contentTypeStr = attrs[MLMediaObjectHiddenAttributeKeys.contentTypeKey] as! String
-        
-        // We only want photos, not movies or older PICT formats (PICT image files are not supported in a sandboxed environment).
-        if ((contentTypeStr != kUTTypePICT as String) && (contentTypeStr != kUTTypeQuickTimeMovie as String)){
-            
-            if let latitudeNumber = attrs[MLMediaObjectHiddenAttributeKeys.latitudeKey]{
-                if let longitudeNumber = attrs[MLMediaObjectHiddenAttributeKeys.longitudeKey]{
-                    let latitude = (latitudeNumber as! NSNumber).doubleValue
-                    let longitude = (longitudeNumber as! NSNumber).doubleValue
-                    if (latitude > -90 && latitude < 90 && latitude != 0 && longitude > -180 && longitude < 180 && longitude != 0){
-                        print(self.imageTitle(from: mediaObject),latitude,longitude)
-                        
-                        /*
-                        if let Places = attrs[MLMediaObjectHiddenAttributeKeys.PlacesKey]{
-                            print(Places)
-                        }
-                        
-                        if let Name = attrs[MLMediaObjectHiddenAttributeKeys.NameKey]{
-                            print(Name)
-                        }
-                        */
-                        
-                        if let DateAsTimerInterval = attrs[MLMediaObjectHiddenAttributeKeys.DateAsTimerIntervalKey]{
-                            print(DateAsTimerInterval)
-                        }
-                        
-                        if let FaceList = attrs[MLMediaObjectHiddenAttributeKeys.FaceListKey]{
-                            print(FaceList)
-                            let array = FaceList as! NSArray
-                            let dic = array.firstObject as! NSDictionary
-                            
-                            let faceKey = dic["faceKey"] as! String
-                            print(faceKey)
-                            
-                            let faceTileImageURL = dic["faceTileImageURL"] as! NSURL
-                            print(faceTileImageURL.absoluteString!)
-                            
-                            let index = dic["index"] as! NSNumber
-                            print(index)
-                            
-                            let name = dic["name"] as! String
-                            print(name)
-                            
-                            let rectangle = dic["rectangle"] as! String
-                            print(rectangle)
-                            
-                        }
-                        
-                        isValidImage = true
-                    }
-                }
-            }
-            
-        }
-        
-        return isValidImage
-    }
-
-    /// Obtains the title of the MLMediaObject (either the meta name or the last component of the URL).
-    func imageTitle(from mediaObject: MLMediaObject) -> String {
-        guard let title = mediaObject.attributes["name"] else {
-            return mediaObject.url!.lastPathComponent
-        }
-        return title as! String
-    }
-    
     // MARK: - Photo Loading
     
     /// Observer for all key paths returned from the MLMediaLibrary.
@@ -191,29 +119,18 @@ class GCMediaLibraryLoader: NSObject {
             // Done observing for media objects that group.
             self.rootMediaGroup.removeObserver(self, forKeyPath: MLMediaLibraryPropertyKeys.mediaObjectsKey, context: &mediaObjectsContext)
             
-            let mediaObjects = self.rootMediaGroup.mediaObjects;
-            for mediaObject in mediaObjects! {
-                if (self.isValidImage(mediaObject)){
-                    self.validMediaObjects.append(mediaObject)
+            if let childGroups = self.rootMediaGroup.childGroups{
+                for (index,mediaGroup) in childGroups.enumerated() {
+                    print("childGroups: \(index)")
+                    print(mediaGroup.identifier)
+                    print(mediaGroup.typeIdentifier)
+                    //print(mediaGroup.modificationDate!)
                 }
             }
             
-            var keyArray : [String] = []
-            
-            for aMO in self.validMediaObjects {
-                for aKey in aMO.attributes.keys {
-                    if !keyArray.contains(aKey) {
-                        keyArray.append(aKey)
-                    }
-                }
-            }
-            
-            print(keyArray)
-            
-            print(self.validMediaObjects.count)
             
             if (self.loadCompleteHandler != nil) {
-                self.loadCompleteHandler!(self.validMediaObjects)
+                self.loadCompleteHandler!(self.rootMediaGroup.mediaObjects!)
             }
             
             // 获取数据后便移除观察

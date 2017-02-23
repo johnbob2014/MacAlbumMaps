@@ -8,6 +8,8 @@
 
 import Cocoa
 
+let appContext = AppDelegate().managedObjectContext
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
