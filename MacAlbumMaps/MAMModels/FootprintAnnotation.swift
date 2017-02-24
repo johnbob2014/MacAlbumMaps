@@ -52,6 +52,10 @@ class FootprintAnnotation: NSObject,MKAnnotation,NSCoding,GCLocationAnalyserProt
     /// 缩略图数组
     var thumbnailArray = [NSImage]()
     
+    override init(){
+        super.init()
+    }
+    
     // MARK: - MKAnnotation
     var coordinate: CLLocationCoordinate2D{
         return self.coordinateWGS84
