@@ -34,7 +34,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         
         self.initControls()
         
-        //self.initData()
+        self.updateMediaInfos()
         
     }
     
@@ -46,18 +46,21 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
     }
     
     private func initControls(){
-        self.startDatePicker.dateValue = Date.init(timeIntervalSinceNow: -30*24*60*60)
+        self.startDatePicker.dateValue = Date.init(timeIntervalSinceNow: -7*24*60*60)
         self.endDatePicker.dateValue = Date.init(timeIntervalSinceNow: 0)
         self.mergeDistanceForMomentTF.stringValue = "200"
     }
     
-    private func initData(){
-        mediaLibraryLoader.asyncLoadMedia()
+    private func updateMediaInfos(){
+        
         mediaLibraryLoader.loadCompleteHandler = { (loadedMediaObjects: [MLMediaObject]) -> Void in
             print("Load OK")
             
             MAMCoreDataManager.updateCoreData(from: loadedMediaObjects)
+            MAMCoreDataManager.asyncUpdatePlacemarks()
         }
+        
+        mediaLibraryLoader.asyncLoadMedia()
     }
     
     @IBAction func momentBtnTD(_ sender: NSButton) {
@@ -85,7 +88,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
             infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
         }
         
-        self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: self.mapBaseMode)
+        self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: MapBaseMode.Location,mergeDistance: 200)
         
 //        let infos2 = appContext.mediaInfos.filter { (info) -> NSPredicate in
 //            info.modificationDate.isGreaterThan(self.startDatePicker.dateValue)
@@ -102,12 +105,12 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         //self.mainMapView.showAnnotations(self.mainMapView.annotations, animated: true)
     }
     
-    func showMediaInfos(mediaInfos: [MediaInfo],mapBaseMode: MapBaseMode) {
+    func showMediaInfos(mediaInfos: [MediaInfo],mapBaseMode: MapBaseMode,mergeDistance: CLLocationDistance) {
         var groupArray: Array<Array<GCLocationAnalyserProtocol>>? = nil
         if mapBaseMode == MapBaseMode.Moment {
-            groupArray = GCLocationAnalyser.divideLocationsInOrder(from: mediaInfos,mergeDistance: 200)
+            groupArray = GCLocationAnalyser.divideLocationsInOrder(from: mediaInfos,mergeDistance: mergeDistance)
         }else if mapBaseMode == MapBaseMode.Location{
-            groupArray = GCLocationAnalyser.divideLocationsOutOfOrder(from: mediaInfos,mergeDistance: 200)
+            groupArray = GCLocationAnalyser.divideLocationsOutOfOrder(from: mediaInfos,mergeDistance: mergeDistance)
         }
         
         if groupArray == nil {
@@ -127,7 +130,9 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
             for (mediaInfoIndex,mediaObject) in currentGroup.enumerated() {
                 print("mediaInfoIndex: \(mediaInfoIndex)")
                 let mediaInfo = mediaObject as! MediaInfo
+                let creationDate = mediaInfo.creationDate as! Date
                 
+                // 添加ID
                 mediaGroupAnno.mediaIdentifiers.append(mediaInfo.identifier!)
                 
                 if mediaInfoIndex == 0 {
@@ -141,17 +146,24 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
                     }
                     
                     if mapBaseMode == MapBaseMode.Moment {
-                        mediaGroupAnno.annoSubtitle = "Moment"
+                        mediaGroupAnno.annoSubtitle = creationDate.stringWithDefaultFormat()
                     }else if mapBaseMode == MapBaseMode.Location{
-                        mediaGroupAnno.annoSubtitle = "Location"
+                        mediaGroupAnno.annoSubtitle = creationDate.stringWithFormat(format: "yyyy-MM-dd")
                     }
                     
+                    //footprintAnno.customTitle = mediaGroupAnno.annoTitle
                     footprintAnno.coordinateWGS84 = mediaInfo.coordinate
-                    footprintAnno.startDate = mediaInfo.creationDate as! Date
+                    footprintAnno.altitude = mediaInfo.location.altitude
+                    footprintAnno.speed = mediaInfo.location.speed
+                    footprintAnno.startDate = creationDate
                     
-                }else{
-                    // 该组其它照片
-                    
+                }else if mediaInfoIndex == currentGroup.count - 1{
+                    // 该组最后1张照片
+                    if mapBaseMode == MapBaseMode.Location{
+                        mediaGroupAnno.annoSubtitle += " ~ " + creationDate.stringWithFormat(format: "yyyy-MM-dd")
+                        footprintAnno.endDate = creationDate
+                    }
+
                 }
                 
             }
@@ -168,10 +180,10 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         if mapBaseMode == MapBaseMode.Moment {
             self.addLineOverlays(annotations: self.addedMediaGroupAnnotations)
         }else if mapBaseMode == MapBaseMode.Location{
-            
+            self.addCircleOverlays(annotations: self.addedMediaGroupAnnotations, radius: mergeDistance)
         }
         
-        self.mainMapView.showAnnotations([self.mainMapView.annotations.first!], animated: true)
+        self.mainMapView.showAnnotations(self.mainMapView.annotations, animated: true)
     }
     
     func addLineOverlays(annotations: [MKAnnotation]) {
@@ -226,6 +238,22 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         
         return MKPolyline.init(points: [z_MP,x_MP,end_MP,y_MP,z_MP], count: 5)
     }
+    
+    func addCircleOverlays(annotations: [MKAnnotation],radius circleRadius: CLLocationDistance) {
+        self.mainMapView.removeOverlays(self.mainMapView.overlays)
+        
+        if annotations.count < 1 {
+            return
+        }
+        var circleOverlays = [MKCircle]()
+        for anno in annotations {
+            let circle = MKCircle.init(center: anno.coordinate, radius: circleRadius)
+            circleOverlays.append(circle)
+        }
+                
+        self.mainMapView.addOverlays(circleOverlays)
+    }
+    
     
     // MARK - MKMapViewDelegate
     

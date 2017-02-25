@@ -21,6 +21,40 @@ extension CoordinateInfo : MKAnnotation{
     public var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2DMake((self.latitude?.doubleValue)!, (self.longitude?.doubleValue)!)
     }
+    
+    // MARK: -
+    func updatePlacemark() {
+        CLGeocoder.init().reverseGeocodeLocation(CLLocation.init(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude)) { (placemarks, error) in
+            if error == nil{
+                
+                if let placemark = placemarks?.last{
+                    self.reverseGeocodeSucceed = NSNumber.init(value: true)
+                    
+                    self.name_Placemark = placemark.name
+                    self.ccISOcountryCode_Placemark = placemark.isoCountryCode
+                    self.country_Placemark = placemark.country;
+                    self.postalCode_Placemark = placemark.postalCode;
+                    self.administrativeArea_Placemark = placemark.administrativeArea;
+                    self.subAdministrativeArea_Placemark = placemark.subAdministrativeArea;
+                    self.locality_Placemark = placemark.locality;
+                    self.subLocality_Placemark = placemark.subLocality;
+                    self.thoroughfare_Placemark = placemark.thoroughfare;
+                    self.subThoroughfare_Placemark = placemark.subThoroughfare;
+                    self.inlandWater_Placemark = placemark.inlandWater;
+                    self.ocean_Placemark = placemark.ocean;
+                    
+                    self.localizedPlaceString_Placemark = placemark.localizedPlaceString(inReverseOrder: true, withInlandWaterAndOcean: false)
+                    
+                    print(self.localizedPlaceString_Placemark)
+                }
+                
+            }else{
+                self.reverseGeocodeSucceed = NSNumber.init(value: false)
+            }
+            
+            try! self.managedObjectContext?.save()
+        }
+    }
 
 }
 
@@ -36,7 +70,22 @@ extension MediaInfo : MKAnnotation,GCLocationAnalyserProtocol{
     }
 }
 
+
 class MAMCoreDataManager: NSObject {
+    
+    class var latestModificationDate: Date{
+        get{
+            if let md = NSUserDefaultsController.shared().defaults.value(forKey: "latestModificationDate"){
+                return md as! Date
+            }else{
+                return Date.init(timeIntervalSince1970: 0.0)
+            }
+        }
+        set{
+            NSUserDefaultsController.shared().defaults.setValue(newValue, forKey: "latestModificationDate")
+            NSUserDefaultsController.shared().defaults.synchronize()
+        }
+    }
     
     // MARK: - Utilities
     
@@ -69,6 +118,7 @@ class MAMCoreDataManager: NSObject {
                         
                         if let DateAsTimerInterval = attrs[MLMediaObjectHiddenAttributeKeys.DateAsTimerIntervalKey]{
                             print(DateAsTimerInterval)
+                            isValidImage = true
                         }
                         
                         if let FaceList = attrs[MLMediaObjectHiddenAttributeKeys.FaceListKey]{
@@ -93,7 +143,6 @@ class MAMCoreDataManager: NSObject {
                             
                         }
                         
-                        isValidImage = true
                     }
                 }
             }
@@ -113,12 +162,26 @@ class MAMCoreDataManager: NSObject {
 
     class func updateCoreData(from mediaObjects:[MLMediaObject]){
         var validMediaObjects = [MLMediaObject]()
+        //var latestModificationDate : Date?
         
+        let latestMD = self.latestModificationDate
+        var newLatestMD: Date = latestMD
         for mediaObject in mediaObjects {
-            if (MAMCoreDataManager.isValidImage(mediaObject)){
-                validMediaObjects.append(mediaObject)
+            if let currentMD = mediaObject.modificationDate{
+                if currentMD.compare(latestMD) == ComparisonResult.orderedDescending {
+                    if (MAMCoreDataManager.isValidImage(mediaObject)){
+                        validMediaObjects.append(mediaObject)
+                    }
+                }
+                
+                if currentMD.compare(newLatestMD) == ComparisonResult.orderedDescending{
+                    newLatestMD = currentMD
+                }
             }
         }
+        
+        // 更新所有照片的最新导入日期
+        self.latestModificationDate = newLatestMD
         
         var keyArray : [String] = []
         
@@ -132,7 +195,7 @@ class MAMCoreDataManager: NSObject {
         
         print(keyArray)
         
-        print(validMediaObjects.count)
+        print("本次更新照片数量：\(validMediaObjects.count)")
         
         var addCoordinateInfoCount = 0
         var addMediaInfoCount = 0
@@ -185,16 +248,30 @@ class MAMCoreDataManager: NSObject {
         
         do {
             try appContext.save()
-            print("Add Result:")
-            print(addCoordinateInfoCount)
-            print(addMediaInfoCount)
-            print(appContext.coordinateInfos.count())
+            print("添加结果:")
+            print("New CoordinateInfo Count: \(addCoordinateInfoCount)")
+            print("New MediaInfo Count: \(addMediaInfoCount)")
+            print("CoordinateInfo Count: \(appContext.coordinateInfos.count())")
+            print("MediaInfo Count: \(appContext.mediaInfos.count())")
             
         } catch  {
-            print("Add Error!")
+            print("添加失败!")
         }
 
 
+    }
+    
+    // MARK: - 
+    class func asyncUpdatePlacemarks() -> Void {
+        DispatchQueue.global(qos: .default).async{
+            let coordinateInfos = appContext.coordinateInfos
+            for coordinateInfo in coordinateInfos{
+                if coordinateInfo.reverseGeocodeSucceed?.boolValue == false{
+                    coordinateInfo.updatePlacemark()
+                    Thread.sleep(forTimeInterval: 1.0)
+                }
+            }
+        }
     }
 }
 
