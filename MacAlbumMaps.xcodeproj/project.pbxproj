@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1E4269D11E61BD02002087EA /* Date+Assistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4269D01E61BD02002087EA /* Date+Assistant.swift */; };
+		1E46B3111E625EE5000C6379 /* FileManager+Assistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E46B3101E625EE5000C6379 /* FileManager+Assistant.swift */; };
+		1E46B3131E625F00000C6379 /* URL+Assistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E46B3121E625F00000C6379 /* URL+Assistant.swift */; };
 		1ECA41BB1E6160CE0068CB44 /* CLPlacemark+Assistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECA41BA1E6160CE0068CB44 /* CLPlacemark+Assistant.swift */; };
 		3D6B5AB6A20AF244E2674E9F /* Pods_MacAlbumMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BEBD2E7F4F52E4B845D5AEA /* Pods_MacAlbumMaps.framework */; };
 		4B2E3D651E5EE031003A913B /* MAMSettingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2E3D641E5EE031003A913B /* MAMSettingManager.swift */; };
@@ -28,6 +30,8 @@
 
 /* Begin PBXFileReference section */
 		1E4269D01E61BD02002087EA /* Date+Assistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Date+Assistant.swift"; path = "GenericExtensions/Date+Assistant.swift"; sourceTree = "<group>"; };
+		1E46B3101E625EE5000C6379 /* FileManager+Assistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FileManager+Assistant.swift"; path = "GenericExtensions/FileManager+Assistant.swift"; sourceTree = "<group>"; };
+		1E46B3121E625F00000C6379 /* URL+Assistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "URL+Assistant.swift"; path = "GenericExtensions/URL+Assistant.swift"; sourceTree = "<group>"; };
 		1ECA41B81E6118100068CB44 /* MacAlbumMaps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacAlbumMaps.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ECA41BA1E6160CE0068CB44 /* CLPlacemark+Assistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CLPlacemark+Assistant.swift"; path = "GenericExtensions/CLPlacemark+Assistant.swift"; sourceTree = "<group>"; };
 		4B2E3D641E5EE031003A913B /* MAMSettingManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MAMSettingManager.swift; path = MAMModels/MAMSettingManager.swift; sourceTree = "<group>"; };
@@ -76,6 +80,8 @@
 			children = (
 				1ECA41BA1E6160CE0068CB44 /* CLPlacemark+Assistant.swift */,
 				1E4269D01E61BD02002087EA /* Date+Assistant.swift */,
+				1E46B3101E625EE5000C6379 /* FileManager+Assistant.swift */,
+				1E46B3121E625F00000C6379 /* URL+Assistant.swift */,
 			);
 			name = GenericExtensions;
 			sourceTree = "<group>";
@@ -277,9 +283,11 @@
 				4B339BD71E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift in Sources */,
 				1ECA41BB1E6160CE0068CB44 /* CLPlacemark+Assistant.swift in Sources */,
 				4B88D0881E5E8ADE008A69BC /* GCLocationAnalyser.swift in Sources */,
+				1E46B3131E625F00000C6379 /* URL+Assistant.swift in Sources */,
 				4B656F471E5D0C1F0074BFA1 /* MAMCoreDataManager.swift in Sources */,
 				1E4269D11E61BD02002087EA /* Date+Assistant.swift in Sources */,
 				4B339BDD1E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift in Sources */,
+				1E46B3111E625EE5000C6379 /* FileManager+Assistant.swift in Sources */,
 				4B2E3D651E5EE031003A913B /* MAMSettingManager.swift in Sources */,
 				4B339BDA1E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift in Sources */,
 			);

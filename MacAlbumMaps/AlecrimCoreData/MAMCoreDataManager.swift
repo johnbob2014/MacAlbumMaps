@@ -15,6 +15,18 @@ import MediaLibrary
 let EntityName_CoordinateInfo = "CoordinateInfo"
 
 
+/// 地址信息数据字典键
+enum PlacemarkInfoDictionaryKey : String {
+    case kCountryArray = "kCountryArray"
+    case kAdministrativeAreaArray = "kAdministrativeAreaArray"
+    case kSubAdministrativeAreaArray = "kSubAdministrativeAreaArray"
+    case kLocalityArray = "kLocalityArray"
+    case kSubLocalityArray = "kSubLocalityArray"
+    case kThoroughfareArray = "kThoroughfareArray"
+    case kSubThoroughfareArray = "kSubThoroughfareArray"
+}
+
+//MARK: - 扩展
 extension CoordinateInfo : MKAnnotation{
     
     // MARK: - MKAnnotation Protocol
@@ -23,8 +35,8 @@ extension CoordinateInfo : MKAnnotation{
     }
     
     // MARK: -
-    func updatePlacemark() {
-        CLGeocoder.init().reverseGeocodeLocation(CLLocation.init(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude)) { (placemarks, error) in
+    func updatePlacemark(geocoder: CLGeocoder) {
+        geocoder.reverseGeocodeLocation(CLLocation.init(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude)) { (placemarks, error) in
             if error == nil{
                 
                 if let placemark = placemarks?.last{
@@ -45,7 +57,7 @@ extension CoordinateInfo : MKAnnotation{
                     
                     self.localizedPlaceString_Placemark = placemark.localizedPlaceString(inReverseOrder: true, withInlandWaterAndOcean: false)
                     
-                    print(self.localizedPlaceString_Placemark)
+                    print(self.localizedPlaceString_Placemark!)
                 }
                 
             }else{
@@ -70,9 +82,13 @@ extension MediaInfo : MKAnnotation,GCLocationAnalyserProtocol{
     }
 }
 
-
+//MARK: - CoreData管理器
 class MAMCoreDataManager: NSObject {
     
+    
+    // MARK: - MLMediaObject验证及更新
+    
+    /// 所有已更新照片的最晚一个导入到Mac的日期
     class var latestModificationDate: Date{
         get{
             if let md = NSUserDefaultsController.shared().defaults.value(forKey: "latestModificationDate"){
@@ -87,8 +103,7 @@ class MAMCoreDataManager: NSObject {
         }
     }
     
-    // MARK: - Utilities
-    
+    /// 验证数据
     /// Helps to make sure the media object is the photo format we want.
     class func isValidImage(_ mediaObject: MLMediaObject) -> Bool{
         var isValidImage = false
@@ -152,6 +167,7 @@ class MAMCoreDataManager: NSObject {
         return isValidImage
     }
     
+    /// 获取 MLMediaObject 的名字
     /// Obtains the title of the MLMediaObject (either the meta name or the last component of the URL).
     class func imageTitle(from mediaObject: MLMediaObject) -> String {
         guard let title = mediaObject.attributes["name"] else {
@@ -160,9 +176,11 @@ class MAMCoreDataManager: NSObject {
         return title as! String
     }
 
+    /// 从指定的 MLMediaObject数组 中获取数据
+    ///
+    /// - Parameter mediaObjects: MLMediaObject数组
     class func updateCoreData(from mediaObjects:[MLMediaObject]){
         var validMediaObjects = [MLMediaObject]()
-        //var latestModificationDate : Date?
         
         let latestMD = self.latestModificationDate
         var newLatestMD: Date = latestMD
@@ -251,27 +269,108 @@ class MAMCoreDataManager: NSObject {
             print("添加结果:")
             print("New CoordinateInfo Count: \(addCoordinateInfoCount)")
             print("New MediaInfo Count: \(addMediaInfoCount)")
-            print("CoordinateInfo Count: \(appContext.coordinateInfos.count())")
-            print("MediaInfo Count: \(appContext.mediaInfos.count())")
-            
+            print("Total CoordinateInfo Count: \(appContext.coordinateInfos.count())")
+            print("Total MediaInfo Count: \(appContext.mediaInfos.count())")
         } catch  {
             print("添加失败!")
         }
-
-
     }
     
-    // MARK: - 
+    // MARK: - 地址信息解析工具
+    
+    /// 更新CoordinateInfo的Placemark
     class func asyncUpdatePlacemarks() -> Void {
         DispatchQueue.global(qos: .default).async{
+            let geocoder = CLGeocoder.init()
             let coordinateInfos = appContext.coordinateInfos
             for coordinateInfo in coordinateInfos{
                 if coordinateInfo.reverseGeocodeSucceed?.boolValue == false{
-                    coordinateInfo.updatePlacemark()
+                    coordinateInfo.updatePlacemark(geocoder: geocoder)
                     Thread.sleep(forTimeInterval: 1.0)
                 }
             }
         }
+    }
+    
+    
+    /// 统计一个 CoordinateInfo数组 的 地址信息数据
+    ///
+    /// - Parameter coordinateInfos: CoordinateInfo数组
+    /// - Returns: 地址信息数据字典
+    class func placemarkInfoDictionary(coordinateInfos: [CoordinateInfo]) -> Dictionary<PlacemarkInfoDictionaryKey, [String]> {
+        var countryArray = [String]()
+        var administrativeAreaArray = [String]()
+        var subAdministrativeAreaArray = [String]()
+        var localityArray = [String]()
+        var subLocalityArray = [String]()
+        var thoroughfareArray = [String]()
+        var subThoroughfareArray = [String]()
+        
+        for info in coordinateInfos{
+            if let country_Placemark = info.country_Placemark {
+                if !countryArray.contains(country_Placemark){
+                    countryArray.append(country_Placemark)
+                }
+            }
+            
+            if let administrativeArea_Placemark = info.administrativeArea_Placemark{
+                if !administrativeAreaArray.contains(administrativeArea_Placemark){
+                    administrativeAreaArray.append(administrativeArea_Placemark)
+                }
+            }
+            
+            if let subAdministrativeArea_Placemark = info.subAdministrativeArea_Placemark{
+                if !subAdministrativeAreaArray.contains(subAdministrativeArea_Placemark){
+                    subAdministrativeAreaArray.append(subAdministrativeArea_Placemark)
+                }
+            }
+            
+            if let locality_Placemark = info.locality_Placemark{
+                if !localityArray.contains(locality_Placemark){
+                    localityArray.append(locality_Placemark)
+                }
+            }
+            
+            if let subLocality_Placemark = info.subLocality_Placemark{
+                if !subLocalityArray.contains(subLocality_Placemark){
+                    subLocalityArray.append(subLocality_Placemark)
+                }
+            }
+            
+            if let thoroughfare_Placemark = info.thoroughfare_Placemark{
+                if !thoroughfareArray.contains(thoroughfare_Placemark){
+                    thoroughfareArray.append(thoroughfare_Placemark)
+                }
+            }
+            
+            if let subThoroughfare_Placemark = info.subThoroughfare_Placemark{
+                if !subThoroughfareArray.contains(subThoroughfare_Placemark){
+                    subThoroughfareArray.append(subThoroughfare_Placemark)
+                }
+            }
+        }
+        
+        return [.kCountryArray:countryArray,
+                .kAdministrativeAreaArray:administrativeAreaArray,
+                .kSubAdministrativeAreaArray:subAdministrativeAreaArray,
+                .kLocalityArray:localityArray,
+                .kSubLocalityArray:subLocalityArray,
+                .kThoroughfareArray:thoroughfareArray,
+                .kSubThoroughfareArray:subThoroughfareArray]
+    }
+    
+    /// 统计一个 MediaInfo数组 的 地址信息数据
+    ///
+    /// - Parameter mediaInfos: MediaInfo数组
+    /// - Returns: 地址信息数据字典
+    class func placemarkInfoDictionary(mediaInfos: [MediaInfo]) -> Dictionary<PlacemarkInfoDictionaryKey, [String]> {
+        var coordinateInfos = [CoordinateInfo]()
+        for mediaInfo in mediaInfos {
+            if let coordinateInfo = mediaInfo.coordinateInfo{
+                coordinateInfos.append(coordinateInfo)
+            }
+        }
+        return MAMCoreDataManager.placemarkInfoDictionary(coordinateInfos: coordinateInfos)
     }
 }
 

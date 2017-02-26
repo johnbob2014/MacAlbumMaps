@@ -20,6 +20,8 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
     @IBOutlet weak var mergeDistanceForMomentTF: NSTextField!
     @IBOutlet weak var momentBtn: NSButton!
     
+    @IBOutlet var infoTV: NSTextView!
+    
     var mapBaseMode: MapBaseMode = MapBaseMode.Moment
     
     var addedIDAnnotations = [MKAnnotation]()
@@ -106,6 +108,10 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
     }
     
     func showMediaInfos(mediaInfos: [MediaInfo],mapBaseMode: MapBaseMode,mergeDistance: CLLocationDistance) {
+        let piDic = MAMCoreDataManager.placemarkInfoDictionary(mediaInfos: mediaInfos)
+        
+        infoTV.string = "\(piDic[.kCountryArray]?.count),\(piDic[.kAdministrativeAreaArray]?.count),\(piDic[.kLocalityArray]?.count),\(piDic[.kSubLocalityArray]?.count),\(piDic[.kThoroughfareArray]?.count))"
+        
         var groupArray: Array<Array<GCLocationAnalyserProtocol>>? = nil
         if mapBaseMode == MapBaseMode.Moment {
             groupArray = GCLocationAnalyser.divideLocationsInOrder(from: mediaInfos,mergeDistance: mergeDistance)
