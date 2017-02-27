@@ -296,7 +296,7 @@ class MAMCoreDataManager: NSObject {
     /// 统计一个 CoordinateInfo数组 的 地址信息数据
     ///
     /// - Parameter coordinateInfos: CoordinateInfo数组
-    /// - Returns: 地址信息数据字典
+    /// - Returns: 地址信息数据字典，只包含名称数组，不包含层级
     class func placemarkInfoDictionary(coordinateInfos: [CoordinateInfo]) -> Dictionary<PlacemarkInfoDictionaryKey, [String]> {
         var countryArray = [String]()
         var administrativeAreaArray = [String]()
@@ -305,6 +305,7 @@ class MAMCoreDataManager: NSObject {
         var subLocalityArray = [String]()
         var thoroughfareArray = [String]()
         var subThoroughfareArray = [String]()
+        
         
         for info in coordinateInfos{
             if let country_Placemark = info.country_Placemark {
@@ -350,6 +351,10 @@ class MAMCoreDataManager: NSObject {
             }
         }
         
+        let countryTN = NSTreeNode.init(representedObject: countryArray)
+        print(countryTN.children!)
+        print(countryTN.representedObject!)
+
         return [.kCountryArray:countryArray,
                 .kAdministrativeAreaArray:administrativeAreaArray,
                 .kSubAdministrativeAreaArray:subAdministrativeAreaArray,
@@ -359,10 +364,75 @@ class MAMCoreDataManager: NSObject {
                 .kSubThoroughfareArray:subThoroughfareArray]
     }
     
+    /// 统计一个 CoordinateInfo数组 的 地址信息数据
+    ///
+    /// - Parameter coordinateInfos: CoordinateInfo数组
+    /// - Returns: 地址信息数据字典，包含层级，格式为 ["国家": ["省": ["市": ["县区": ["村镇街道": 村镇街道个数]]]]]
+    class func placemarkInfoDictionaryPro(coordinateInfos: [CoordinateInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
+        var countryDic = Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>>()
+//        var administrativeAreaDic = Dictionary<String, Any>()
+//        var subAdministrativeAreaDic = Dictionary<String, Any>()
+//        var localityDic = Dictionary<String, Any>()
+//        var subLocalityDic = Dictionary<String, Any>()
+//        var thoroughfareDic = Dictionary<String, Any>()
+//        var subThoroughfareDic = Dictionary<String, Any>()
+        
+        for info in coordinateInfos{
+            if let country_Placemark = info.country_Placemark {
+                if let administrativeAreaDic = countryDic[country_Placemark]{
+                    // 如果存在这个国家的省字典，则说明已经包含这个国家
+                }else{
+                    // 创建一个国家
+                    countryDic.updateValue(Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>(), forKey: country_Placemark)
+                }
+                
+                if let administrativeArea_Placemark = info.administrativeArea_Placemark{
+                    if let localityDic = countryDic[country_Placemark]![administrativeArea_Placemark]{
+                        // 已经包含这个省
+                    }else{
+                        // 创建一个省
+                        countryDic[country_Placemark]!.updateValue(Dictionary<String, Dictionary<String, Dictionary<String, Int>>>(), forKey: administrativeArea_Placemark)
+                    }
+                    
+                    
+                    if let locality_Placemark = info.locality_Placemark{
+                        if let subLocalityDic = countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]{
+                            // 已经包含这个市
+                        }else{
+                            // 创建一个市
+                            countryDic[country_Placemark]![administrativeArea_Placemark]!.updateValue(Dictionary<String, Dictionary<String, Int>>(), forKey: locality_Placemark)
+                        }
+
+                        if let subLocality_Placemark = info.subLocality_Placemark{
+                            if let thoroughfareDic = countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]![subLocality_Placemark]{
+                                // 已经包含这个县区
+                            }else{
+                                // 创建一个县区
+                                countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]!.updateValue(Dictionary<String, Int>(), forKey: subLocality_Placemark)
+                            }
+                            
+                            if let thoroughfare_Placemark = info.thoroughfare_Placemark{
+                                if let thoroughfareCount = countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]![subLocality_Placemark]![thoroughfare_Placemark]{
+                                    // 已经包含这个村镇街道，令这个的村镇街道的个数加1
+                                    countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]![subLocality_Placemark]![thoroughfare_Placemark] = thoroughfareCount + 1
+                                }else{
+                                    // 创建一个村镇街道，并将其个数设为1
+                                    countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]![subLocality_Placemark]![thoroughfare_Placemark] = 1
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return countryDic
+    }
+
     /// 统计一个 MediaInfo数组 的 地址信息数据
     ///
     /// - Parameter mediaInfos: MediaInfo数组
-    /// - Returns: 地址信息数据字典
+    /// - Returns: 地址信息数据字典，只包含名称数组，不包含层级
     class func placemarkInfoDictionary(mediaInfos: [MediaInfo]) -> Dictionary<PlacemarkInfoDictionaryKey, [String]> {
         var coordinateInfos = [CoordinateInfo]()
         for mediaInfo in mediaInfos {
@@ -371,6 +441,20 @@ class MAMCoreDataManager: NSObject {
             }
         }
         return MAMCoreDataManager.placemarkInfoDictionary(coordinateInfos: coordinateInfos)
+    }
+    
+    /// 统计一个 MediaInfo数组 的 地址信息数据
+    ///
+    /// - Parameter mediaInfos: MediaInfo数组
+    /// - Returns: 地址信息数据字典，包含层级，格式为 ["国家": ["省": ["市": ["县区": ["村镇街道": 村镇街道个数]]]]]
+    class func placemarkInfoDictionaryPro(mediaInfos: [MediaInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
+        var coordinateInfos = [CoordinateInfo]()
+        for mediaInfo in mediaInfos {
+            if let coordinateInfo = mediaInfo.coordinateInfo{
+                coordinateInfos.append(coordinateInfo)
+            }
+        }
+        return MAMCoreDataManager.placemarkInfoDictionaryPro(coordinateInfos: coordinateInfos)
     }
 }
 

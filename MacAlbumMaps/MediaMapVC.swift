@@ -10,9 +10,13 @@ import Cocoa
 import MapKit
 import MediaLibrary
 
-class MediaMapVC: NSViewController,MKMapViewDelegate{
-    let mediaLibraryLoader = GCMediaLibraryLoader()
-
+class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOutlineViewDataSource{
+    
+    @IBOutlet var locationTreeController: NSTreeController!
+    
+    @IBOutlet weak var locationOutlineView: NSOutlineView!
+    var sourceDic = Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>>()
+    
     @IBOutlet weak var mainMapView: MKMapView!
     
     @IBOutlet weak var startDatePicker: NSDatePicker!
@@ -21,6 +25,8 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
     @IBOutlet weak var momentBtn: NSButton!
     
     @IBOutlet var infoTV: NSTextView!
+    
+    let mediaLibraryLoader = GCMediaLibraryLoader()
     
     var mapBaseMode: MapBaseMode = MapBaseMode.Moment
     
@@ -111,6 +117,12 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         let piDic = MAMCoreDataManager.placemarkInfoDictionary(mediaInfos: mediaInfos)
         
         infoTV.string = "\(piDic[.kCountryArray]?.count),\(piDic[.kAdministrativeAreaArray]?.count),\(piDic[.kLocalityArray]?.count),\(piDic[.kSubLocalityArray]?.count),\(piDic[.kThoroughfareArray]?.count))"
+        
+        sourceDic = MAMCoreDataManager.placemarkInfoDictionaryPro(mediaInfos: mediaInfos)
+        print(sourceDic)
+        self.locationOutlineView.reloadData()
+        //self.locationTreeController.content = dic
+        //self.locationTreeController.childrenKeyPath = ""
         
         var groupArray: Array<Array<GCLocationAnalyserProtocol>>? = nil
         if mapBaseMode == MapBaseMode.Moment {
@@ -218,14 +230,14 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
         }
     }
     
-    class func createLineMKPolyline(startCoordinate startCoord:CLLocationCoordinate2D,endCoordinate endCoord:CLLocationCoordinate2D) -> MKPolyline {
-        let coordinates = [startCoord,endCoord]
+    class func createLineMKPolyline(startCoordinate:CLLocationCoordinate2D,endCoordinate:CLLocationCoordinate2D) -> MKPolyline {
+        let coordinates = [startCoordinate,endCoordinate]
         return MKPolyline.init(coordinates: coordinates, count: 2)
     }
     
-    class func createArrowMKPolygon(startCoordinate startCoord:CLLocationCoordinate2D,endCoordinate endCoord:CLLocationCoordinate2D) -> MKPolyline {
-        let start_MP: MKMapPoint = MKMapPointForCoordinate(startCoord)
-        let end_MP: MKMapPoint = MKMapPointForCoordinate(endCoord)
+    class func createArrowMKPolygon(startCoordinate:CLLocationCoordinate2D,endCoordinate:CLLocationCoordinate2D) -> MKPolyline {
+        let start_MP: MKMapPoint = MKMapPointForCoordinate(startCoordinate)
+        let end_MP: MKMapPoint = MKMapPointForCoordinate(endCoordinate)
         var x_MP: MKMapPoint = MKMapPoint.init()
         var y_MP = x_MP
         var z_MP = x_MP
@@ -261,7 +273,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
     }
     
     
-    // MARK - MKMapViewDelegate
+    // MARK: - MKMapViewDelegate
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -311,4 +323,58 @@ class MediaMapVC: NSViewController,MKMapViewDelegate{
             return MKOverlayRenderer.init(overlay: overlay)
         }
     }
+    
+    // MARK: - NSOutlineViewDataSource
+    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+        if item != nil{
+            let dic = item as! Dictionary<String,Any>
+            return dic.keys.count
+        }else{
+            return sourceDic.keys.count
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+        let dic = item as! Dictionary<String,Any>
+        if let first = dic.values.first{
+            if first is Int {
+                return false
+            }else{
+                return true
+            }
+        }else{
+            return true
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+        print(item)
+        if item != nil{
+            let dic = item as! Dictionary<String,Any>
+            let key = dic.keys.sorted()[index]
+            return dic[key]!
+        }else{
+            return sourceDic
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
+        
+        if item != nil{
+            let dic = item as! Dictionary<String,Any>
+            return "Node"//dic.keys.sorted().first
+        }else{
+            return "/"
+        }
+    }
+//    func outlineView(_ outlineView: NSOutlineView, dataCellFor tableColumn: NSTableColumn?, item: Any) -> NSCell? {
+//        let cell = outlineView.ce
+//    }
+    
+    // MARK: - NSOutlineViewDelegate
+    func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
+        return false
+    }
+    
+    
 }
