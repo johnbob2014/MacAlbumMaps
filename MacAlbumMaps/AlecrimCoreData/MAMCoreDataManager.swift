@@ -370,18 +370,27 @@ class MAMCoreDataManager: NSObject {
                 .kSubThoroughfareArray:subThoroughfareArray]
     }
     
+    /// 统计一个 MediaInfo数组 的 地址信息数据
+    ///
+    /// - Parameter mediaInfos: MediaInfo数组
+    /// - Returns: 地址信息数据字典，只包含名称数组，不包含层级
+    class func placemarkInfoDictionary(mediaInfos: [MediaInfo]) -> Dictionary<PlacemarkInfoDictionaryKey, [String]> {
+        var coordinateInfos = [CoordinateInfo]()
+        for mediaInfo in mediaInfos {
+            if let coordinateInfo = mediaInfo.coordinateInfo{
+                coordinateInfos.append(coordinateInfo)
+            }
+        }
+        return MAMCoreDataManager.placemarkInfoDictionary(coordinateInfos: coordinateInfos)
+    }
+
+    
     /// 统计一个 CoordinateInfo数组 的 地址信息数据
     ///
     /// - Parameter coordinateInfos: CoordinateInfo数组
     /// - Returns: 地址信息数据字典，包含层级，格式为 ["国家": ["省": ["市": ["县区": ["村镇街道": 村镇街道个数]]]]]
-    class func placemarkHierarchicalInfo(coordinateInfos: [CoordinateInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
+    class func placemarkHierarchicalInfoDictionary(coordinateInfos: [CoordinateInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
         var countryDic = Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>>()
-//        var administrativeAreaDic = Dictionary<String, Any>()
-//        var subAdministrativeAreaDic = Dictionary<String, Any>()
-//        var localityDic = Dictionary<String, Any>()
-//        var subLocalityDic = Dictionary<String, Any>()
-//        var thoroughfareDic = Dictionary<String, Any>()
-//        var subThoroughfareDic = Dictionary<String, Any>()
         
         for info in coordinateInfos{
             if let country_Placemark = info.country_Placemark {
@@ -425,34 +434,94 @@ class MAMCoreDataManager: NSObject {
         
         return countryDic
     }
-
-    /// 统计一个 MediaInfo数组 的 地址信息数据
-    ///
-    /// - Parameter mediaInfos: MediaInfo数组
-    /// - Returns: 地址信息数据字典，只包含名称数组，不包含层级
-    class func placemarkInfoDictionary(mediaInfos: [MediaInfo]) -> Dictionary<PlacemarkInfoDictionaryKey, [String]> {
-        var coordinateInfos = [CoordinateInfo]()
-        for mediaInfo in mediaInfos {
-            if let coordinateInfo = mediaInfo.coordinateInfo{
-                coordinateInfos.append(coordinateInfo)
-            }
-        }
-        return MAMCoreDataManager.placemarkInfoDictionary(coordinateInfos: coordinateInfos)
-    }
     
     /// 统计一个 MediaInfo数组 的 地址信息数据
     ///
     /// - Parameter mediaInfos: MediaInfo数组
     /// - Returns: 地址信息数据字典，包含层级，格式为 ["国家": ["省": ["市": ["县区": ["村镇街道": 村镇街道个数]]]]]
-    class func placemarkHierarchicalInfo(mediaInfos: [MediaInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
+    class func placemarkHierarchicalInfoDictionary(mediaInfos: [MediaInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
         var coordinateInfos = [CoordinateInfo]()
         for mediaInfo in mediaInfos {
             if let coordinateInfo = mediaInfo.coordinateInfo{
                 coordinateInfos.append(coordinateInfo)
             }
         }
-        return MAMCoreDataManager.placemarkHierarchicalInfo(coordinateInfos: coordinateInfos)
+        return MAMCoreDataManager.placemarkHierarchicalInfoDictionary(coordinateInfos: coordinateInfos)
     }
+    
+    
+    /// 根据 地址信息数据字典，包含层级 生成 可用于NSOutlineView的GCTreeNode
+    ///
+    /// - Parameter placemarkHierarchicalInfoDictionary: 地址信息数据字典，包含层级
+    /// - Returns: 可用于NSOutlineView的GCTreeNode
+    class func placemarkHierarchicalInfoTreeNode(placemarkHierarchicalInfoDictionary: Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>>) -> GCTreeNode{
+        let rootTreeNode = GCTreeNode()
+        rootTreeNode.isTop = true
+        rootTreeNode.title = NSLocalizedString("全部", comment: "")
+        
+        for (countryTitle,countryDic) in placemarkHierarchicalInfoDictionary{
+            let countryTN = GCTreeNode()
+            countryTN.parent = rootTreeNode
+            countryTN.title = countryTitle
+            
+            for (administrativeAreaTitle,administrativeAreaDic) in countryDic {
+                let administrativeAreaTN = GCTreeNode()
+                administrativeAreaTN.parent = countryTN
+                administrativeAreaTN.title = administrativeAreaTitle
+                
+                for (localityTitle,localityDic) in administrativeAreaDic {
+                    let localityTN = GCTreeNode()
+                    localityTN.parent = administrativeAreaTN
+                    localityTN.title = localityTitle
+                    
+                    for (subLocalityTitle,subLocalityDic) in localityDic {
+                        let subLocalityTN = GCTreeNode()
+                        subLocalityTN.parent = localityTN
+                        subLocalityTN.title = subLocalityTitle
+                        
+                        for (thoroughfareTitle,thoroughfareCount) in subLocalityDic {
+                            let thoroughfareTN = GCTreeNode()
+                            thoroughfareTN.parent = subLocalityTN
+                            thoroughfareTN.title = thoroughfareTitle
+                            
+                            thoroughfareTN.isLeaf = true
+                            thoroughfareTN.representedObject = thoroughfareCount
+                            
+                            subLocalityTN.children.append(thoroughfareTN)
+                        }
+                        
+                        localityTN.children.append(subLocalityTN)
+                    }
+                    
+                    administrativeAreaTN.children.append(localityTN)
+                }
+                
+                countryTN.children.append(administrativeAreaTN)
+            }
+            
+            rootTreeNode.children.append(countryTN)
+        }
+        
+        return rootTreeNode
+    }
+    
+    
+    /// 根据 CoordinateInfo数组 生成 可用于NSOutlineView的GCTreeNode
+    ///
+    /// - Parameter coordinateInfos: CoordinateInfo数组
+    /// - Returns: 可用于NSOutlineView的GCTreeNode
+    class func placemarkHierarchicalInfoTreeNode(coordinateInfos: [CoordinateInfo]) -> GCTreeNode{
+        return MAMCoreDataManager.placemarkHierarchicalInfoTreeNode(placemarkHierarchicalInfoDictionary: MAMCoreDataManager.placemarkHierarchicalInfoDictionary(coordinateInfos: coordinateInfos))
+    }
+    
+    /// 根据 MediaInfo数组 生成 可用于NSOutlineView的GCTreeNode
+    ///
+    /// - Parameter mediaInfos: MediaInfo数组
+    /// - Returns: 可用于NSOutlineView的GCTreeNode
+    class func placemarkHierarchicalInfoTreeNode(mediaInfos: [MediaInfo]) -> GCTreeNode{
+        return MAMCoreDataManager.placemarkHierarchicalInfoTreeNode(placemarkHierarchicalInfoDictionary: MAMCoreDataManager.placemarkHierarchicalInfoDictionary(mediaInfos: mediaInfos))
+    }
+    
 }
 
 

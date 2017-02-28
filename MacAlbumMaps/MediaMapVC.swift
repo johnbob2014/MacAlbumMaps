@@ -15,7 +15,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     @IBOutlet var locationTreeController: NSTreeController!
     
     @IBOutlet weak var locationOutlineView: NSOutlineView!
-    var sourceDic = Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>>()
+    var rootTreeNode = GCTreeNode()
     
     @IBOutlet weak var mainMapView: MKMapView!
     
@@ -47,7 +47,6 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         self.initControls()
         
         self.updateMediaInfos()
-        
     }
     
     private func initMapView(){
@@ -61,6 +60,10 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         self.startDatePicker.dateValue = Date.init(timeIntervalSinceNow: -7*24*60*60)
         self.endDatePicker.dateValue = Date.init(timeIntervalSinceNow: 0)
         self.mergeDistanceForMomentTF.stringValue = "200"
+        
+        rootTreeNode = MAMCoreDataManager.placemarkHierarchicalInfoTreeNode(mediaInfos: appContext.mediaInfos.sorted(by: { _,_ in true }))
+        self.locationOutlineView.reloadData()
+        
     }
     
     private func updateMediaInfos(){
@@ -93,9 +96,11 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         
         infoTV.string = "\(piDic[.kCountryArray]?.count),\(piDic[.kAdministrativeAreaArray]?.count),\(piDic[.kLocalityArray]?.count),\(piDic[.kSubLocalityArray]?.count),\(piDic[.kThoroughfareArray]?.count))"
         
-        sourceDic = MAMCoreDataManager.placemarkHierarchicalInfo(mediaInfos: mediaInfos)
-        print(sourceDic)
-        self.locationOutlineView.reloadData()
+        //sourceDic = MAMCoreDataManager.placemarkHierarchicalInfo(mediaInfos: mediaInfos)
+        //print(sourceDic)
+        //rootTreeNode =
+        
+        //self.locationOutlineView.reloadData()
         
         var groupArray: Array<Array<GCLocationAnalyserProtocol>>? = nil
         if mapBaseMode == MapBaseMode.Moment {
@@ -335,6 +340,45 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     // MARK: - NSOutlineViewDataSource
     func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
         if item != nil{
+            let treeNode = item as! GCTreeNode
+            return treeNode.numberOfChildren
+        }else{
+            return rootTreeNode.numberOfChildren
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+        let treeNode = item as! GCTreeNode
+        if treeNode.isLeaf {
+            return false
+        }else{
+            return true
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+        //print(item)
+        if item != nil{
+            let treeNode = item as! GCTreeNode
+            return treeNode.childAtIndex(index: index)!
+        }else{
+            return rootTreeNode
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+        let view = outlineView.make(withIdentifier: (tableColumn?.identifier)!, owner: self) as! NSTableCellView
+        
+        let treeNode = item as! GCTreeNode
+        
+        view.textField?.stringValue =  treeNode.title
+        
+        return view
+    }
+    
+    /*
+    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+        if item != nil{
             let dic = item as! Dictionary<String,Any>
             return dic.keys.count
         }else{
@@ -366,6 +410,17 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         }
     }
     
+    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+        let view = outlineView.make(withIdentifier: (tableColumn?.identifier)!, owner: self) as! NSTableCellView
+        
+        let dic = item as! Dictionary<String,Any>
+        
+        view.textField?.stringValue =  "Node"//dic.keys.sorted().first
+
+        
+        return view
+    }
+    
     func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
         
         if item != nil{
@@ -375,10 +430,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             return "/"
         }
     }
-//    func outlineView(_ outlineView: NSOutlineView, dataCellFor tableColumn: NSTableColumn?, item: Any) -> NSCell? {
-//        let cell = outlineView.ce
-//    }
-    
+ */
     // MARK: - NSOutlineViewDelegate
     func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
         return false
