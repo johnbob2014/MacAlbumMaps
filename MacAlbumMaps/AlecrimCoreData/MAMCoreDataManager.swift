@@ -40,7 +40,7 @@ extension CoordinateInfo : MKAnnotation{
             if error == nil{
                 
                 if let placemark = placemarks?.last{
-                    self.reverseGeocodeSucceed = NSNumber.init(value: true)
+                    
                     
                     self.name_Placemark = placemark.name
                     self.ccISOcountryCode_Placemark = placemark.isoCountryCode
@@ -55,16 +55,18 @@ extension CoordinateInfo : MKAnnotation{
                     self.inlandWater_Placemark = placemark.inlandWater;
                     self.ocean_Placemark = placemark.ocean;
                     
-                    self.localizedPlaceString_Placemark = placemark.localizedPlaceString(inReverseOrder: true, withInlandWaterAndOcean: false)
+                    self.localizedPlaceString_Placemark = placemark.localizedPlaceString(inReverseOrder: false, withInlandWaterAndOcean: false)
                     
                     print(self.localizedPlaceString_Placemark!)
+                    self.reverseGeocodeSucceed = NSNumber.init(value: true)
+                    try! appContext.save()
                 }
                 
             }else{
                 self.reverseGeocodeSucceed = NSNumber.init(value: false)
             }
             
-            try! self.managedObjectContext?.save()
+            //try! self.managedObjectContext?.save()
         }
     }
 
@@ -282,13 +284,17 @@ class MAMCoreDataManager: NSObject {
     class func asyncUpdatePlacemarks() -> Void {
         DispatchQueue.global(qos: .default).async{
             let geocoder = CLGeocoder.init()
-            let coordinateInfos = appContext.coordinateInfos
-            for coordinateInfo in coordinateInfos{
-                if coordinateInfo.reverseGeocodeSucceed?.boolValue == false{
-                    coordinateInfo.updatePlacemark(geocoder: geocoder)
-                    Thread.sleep(forTimeInterval: 1.0)
-                }
+            let coordinateInfos = appContext.coordinateInfos.filter(){ $0.reverseGeocodeSucceed?.boolValue == false }
+            let total = coordinateInfos.count
+            for (index,coordinateInfo) in coordinateInfos.enumerated(){
+                print("Parsing:\(index+1)/\(total)")
+                coordinateInfo.updatePlacemark(geocoder: geocoder)
+                Thread.sleep(forTimeInterval: 1.0)
+
+//                if coordinateInfo.reverseGeocodeSucceed?.boolValue == false{
+//                                    }
             }
+            
         }
     }
     
@@ -368,7 +374,7 @@ class MAMCoreDataManager: NSObject {
     ///
     /// - Parameter coordinateInfos: CoordinateInfo数组
     /// - Returns: 地址信息数据字典，包含层级，格式为 ["国家": ["省": ["市": ["县区": ["村镇街道": 村镇街道个数]]]]]
-    class func placemarkInfoDictionaryPro(coordinateInfos: [CoordinateInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
+    class func placemarkHierarchicalInfo(coordinateInfos: [CoordinateInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
         var countryDic = Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>>()
 //        var administrativeAreaDic = Dictionary<String, Any>()
 //        var subAdministrativeAreaDic = Dictionary<String, Any>()
@@ -379,36 +385,27 @@ class MAMCoreDataManager: NSObject {
         
         for info in coordinateInfos{
             if let country_Placemark = info.country_Placemark {
-                if let administrativeAreaDic = countryDic[country_Placemark]{
-                    // 如果存在这个国家的省字典，则说明已经包含这个国家
-                }else{
-                    // 创建一个国家
-                    countryDic.updateValue(Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>(), forKey: country_Placemark)
+                if nil == countryDic[country_Placemark]{
+                    // 如果不存在这个国家，创建一个
+                    countryDic[country_Placemark] = Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>()
                 }
                 
                 if let administrativeArea_Placemark = info.administrativeArea_Placemark{
-                    if let localityDic = countryDic[country_Placemark]![administrativeArea_Placemark]{
-                        // 已经包含这个省
-                    }else{
-                        // 创建一个省
-                        countryDic[country_Placemark]!.updateValue(Dictionary<String, Dictionary<String, Dictionary<String, Int>>>(), forKey: administrativeArea_Placemark)
+                    if nil == countryDic[country_Placemark]![administrativeArea_Placemark]{
+                        // 如果不存在这个省，创建一个
+                        countryDic[country_Placemark]![administrativeArea_Placemark] = Dictionary<String, Dictionary<String, Dictionary<String, Int>>>()
                     }
                     
-                    
                     if let locality_Placemark = info.locality_Placemark{
-                        if let subLocalityDic = countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]{
-                            // 已经包含这个市
-                        }else{
-                            // 创建一个市
-                            countryDic[country_Placemark]![administrativeArea_Placemark]!.updateValue(Dictionary<String, Dictionary<String, Int>>(), forKey: locality_Placemark)
+                        if nil == countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]{
+                            // 如果不存在这个市，创建一个
+                             countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark] = Dictionary<String, Dictionary<String, Int>>()
                         }
-
+                        
                         if let subLocality_Placemark = info.subLocality_Placemark{
-                            if let thoroughfareDic = countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]![subLocality_Placemark]{
-                                // 已经包含这个县区
-                            }else{
-                                // 创建一个县区
-                                countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]!.updateValue(Dictionary<String, Int>(), forKey: subLocality_Placemark)
+                            if nil == countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]![subLocality_Placemark]{
+                                // 如果不存在这个县区，创建一个
+                                countryDic[country_Placemark]![administrativeArea_Placemark]![locality_Placemark]![subLocality_Placemark] = Dictionary<String, Int>()
                             }
                             
                             if let thoroughfare_Placemark = info.thoroughfare_Placemark{
@@ -447,14 +444,14 @@ class MAMCoreDataManager: NSObject {
     ///
     /// - Parameter mediaInfos: MediaInfo数组
     /// - Returns: 地址信息数据字典，包含层级，格式为 ["国家": ["省": ["市": ["县区": ["村镇街道": 村镇街道个数]]]]]
-    class func placemarkInfoDictionaryPro(mediaInfos: [MediaInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
+    class func placemarkHierarchicalInfo(mediaInfos: [MediaInfo]) -> Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>> {
         var coordinateInfos = [CoordinateInfo]()
         for mediaInfo in mediaInfos {
             if let coordinateInfo = mediaInfo.coordinateInfo{
                 coordinateInfos.append(coordinateInfo)
             }
         }
-        return MAMCoreDataManager.placemarkInfoDictionaryPro(coordinateInfos: coordinateInfos)
+        return MAMCoreDataManager.placemarkHierarchicalInfo(coordinateInfos: coordinateInfos)
     }
 }
 

@@ -10,15 +10,15 @@ import Foundation
 import CoreLocation
 
 extension String{
-    func placemarkBriefName() -> String {
+    func placemarkBriefName(separator: String = ",") -> String {
         var briefName = ""
         
-        let stringArray = self.components(separatedBy: ",")
+        let stringArray = self.components(separatedBy: separator)
         if stringArray.count == 1 {
             briefName = stringArray.last!
         }else if stringArray.count > 1{
             let lastStr = stringArray.last!
-            if lastStr.lengthOfBytes(using: String.Encoding.unicode) >= 5{
+            if lastStr.lengthOfBytes(using: String.Encoding.unicode) >= 10{
                 briefName = lastStr
             }else{
                 briefName = stringArray[stringArray.count - 2] + lastStr
@@ -30,7 +30,7 @@ extension String{
 }
 
 extension CLPlacemark{
-    func localizedPlaceString(inReverseOrder reverseOrder: Bool,withInlandWaterAndOcean inlandWaterAndOcean: Bool) -> String {
+    func localizedPlaceString(inReverseOrder reverseOrder: Bool,withInlandWaterAndOcean inlandWaterAndOcean: Bool,separator: String = ",") -> String {
         
         // subLocality及其之前的地址信息，以逗号分隔
         var detailLocationStringTillSubLocality = ""
@@ -47,19 +47,19 @@ extension CLPlacemark{
             trimmedNameString = trimmedNameString.replacingOccurrences(of: country, with: "")
         }
         if let administrativeArea = self.administrativeArea{
-            detailLocationStringTillSubLocality += "," + administrativeArea
+            detailLocationStringTillSubLocality += separator + administrativeArea
             trimmedNameString = trimmedNameString.replacingOccurrences(of: administrativeArea, with: "")
         }
         if let subAdministrativeArea = self.subAdministrativeArea{
-            detailLocationStringTillSubLocality += "," + subAdministrativeArea
+            detailLocationStringTillSubLocality += separator + subAdministrativeArea
             trimmedNameString = trimmedNameString.replacingOccurrences(of: subAdministrativeArea, with: "")
         }
         if let locality = self.locality{
-            detailLocationStringTillSubLocality += "," + locality
+            detailLocationStringTillSubLocality += separator + locality
             trimmedNameString = trimmedNameString.replacingOccurrences(of: locality, with: "")
         }
         if let subLocality = self.subLocality{
-            detailLocationStringTillSubLocality += "," + subLocality
+            detailLocationStringTillSubLocality += separator + subLocality
             trimmedNameString = trimmedNameString.replacingOccurrences(of: subLocality, with: "")
         }
         if let thoroughfare = self.thoroughfare{
@@ -84,21 +84,21 @@ extension CLPlacemark{
             if trimmedNameString.isEmpty {
                 combinedDetailLocationString = detailLocationStringTillSubLocality
             }else{
-                combinedDetailLocationString = detailLocationStringTillSubLocality + "," + trimmedNameString
+                combinedDetailLocationString = detailLocationStringTillSubLocality + separator + trimmedNameString
             }
         }
         
         if let thoroughfare = self.thoroughfare{
-            combinedDetailLocationString += "," + thoroughfare
+            combinedDetailLocationString += separator + thoroughfare
         }
         if let subThoroughfare = self.subThoroughfare{
-            combinedDetailLocationString += "," + subThoroughfare
+            combinedDetailLocationString += separator + subThoroughfare
         }
         
         if self.name == trimmedNameString {
             // self.name 是地点名称
             // 在地下信息中添加地点名称
-            combinedDetailLocationString += "," + trimmedNameString
+            combinedDetailLocationString += separator + trimmedNameString
         }
         
         var resultString = combinedDetailLocationString
@@ -106,11 +106,11 @@ extension CLPlacemark{
         if reverseOrder{
             // 生成逆序地址
             resultString = ""
-            let reversedStringArray = combinedDetailLocationString.components(separatedBy: ",").reversed()
+            let reversedStringArray = combinedDetailLocationString.components(separatedBy: separator).reversed()
             for (index,aStr) in reversedStringArray.enumerated() {
                 resultString += aStr
                 if index != reversedStringArray.count - 1 {
-                    resultString += ","
+                    resultString += separator
                 }
             }
         }
@@ -124,12 +124,12 @@ extension CLPlacemark{
             }
         }
         
-        resultString = resultString.replacingOccurrences(of: ",,", with: ",")
+        resultString = resultString.replacingOccurrences(of: separator + separator, with: separator)
         
         return resultString
     }
     
-    func areasOfInterestString(withIndex: Bool) -> String? {
+    func areasOfInterestString(withIndex: Bool,separator: String = ",") -> String? {
         if let areasOfInterest = self.areasOfInterest{
             var resultString = ""
             for (index,interest) in areasOfInterest.enumerated() {
@@ -142,7 +142,7 @@ extension CLPlacemark{
                 
                 // 每个兴趣点后添加,
                 if index != areasOfInterest.count - 1 {
-                    resultString += ","
+                    resultString += separator
                 }
             }
             return resultString

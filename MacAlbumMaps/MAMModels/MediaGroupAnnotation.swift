@@ -19,6 +19,9 @@ class MediaGroupAnnotation: NSObject , MKAnnotation{
     /// 必需，Media的identifier数组
     var mediaIdentifiers = [String]()
     
+    /// 必需，Media的URL数组
+    var mediaURLs = [URL]()
+    
     /// 可选，标题
     var annoTitle = ""
     

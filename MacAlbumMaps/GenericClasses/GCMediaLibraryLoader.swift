@@ -119,6 +119,7 @@ class GCMediaLibraryLoader: NSObject {
             // Done observing for media objects that group.
             self.rootMediaGroup.removeObserver(self, forKeyPath: MLMediaLibraryPropertyKeys.mediaObjectsKey, context: &mediaObjectsContext)
             
+            /*
             if let childGroups = self.rootMediaGroup.childGroups{
                 for (index,mediaGroup) in childGroups.enumerated() {
                     print("childGroups: \(index)")
@@ -127,7 +128,7 @@ class GCMediaLibraryLoader: NSObject {
                     //print(mediaGroup.modificationDate!)
                 }
             }
-            
+            */
             
             if (self.loadCompleteHandler != nil) {
                 self.loadCompleteHandler!(self.rootMediaGroup.mediaObjects!)

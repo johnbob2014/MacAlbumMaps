@@ -26,6 +26,10 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     
     @IBOutlet var infoTV: NSTextView!
     
+    @IBOutlet weak var imageView: NSImageView!
+    var mediaURLsFromSelectedMediaGroupAnnotation = [URL]()
+    var indexOfCurrentImage = 0
+    
     let mediaLibraryLoader = GCMediaLibraryLoader()
     
     var mapBaseMode: MapBaseMode = MapBaseMode.Moment
@@ -64,6 +68,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         mediaLibraryLoader.loadCompleteHandler = { (loadedMediaObjects: [MLMediaObject]) -> Void in
             print("Load OK")
             
+            //MAMCoreDataManager.latestModificationDate = Date.init(timeIntervalSince1970: 0.0)
             MAMCoreDataManager.updateCoreData(from: loadedMediaObjects)
             MAMCoreDataManager.asyncUpdatePlacemarks()
         }
@@ -72,23 +77,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     }
     
     @IBAction func momentBtnTD(_ sender: NSButton) {
-        //self.startDatePicker.dateValue
         self.mainMapView.removeAnnotations(self.mainMapView.annotations)
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = DateFormatter.Style.full
-        
-//        let infos = appContext.mediaInfos
-//        var validInfos = [MediaInfo]()
-//        for info in infos{
-//            if let date = info.creationDate{
-//                
-//                if date.compare(self.startDatePicker.dateValue) == ComparisonResult.orderedDescending && date.compare(self.endDatePicker.dateValue) == ComparisonResult.orderedAscending{
-//                    print(dateFormatter.string(from: date as Date))
-//                    validInfos.append(info)
-//                }
-//            }
-//        }
         
         let filteredMediaInfos = appContext.mediaInfos.filter { (info) -> NSPredicate in
             info.creationDate.isBetween(self.startDatePicker.dateValue..<self.endDatePicker.dateValue)
@@ -97,20 +86,6 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         }
         
         self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: MapBaseMode.Location,mergeDistance: 200)
-        
-//        let infos2 = appContext.mediaInfos.filter { (info) -> NSPredicate in
-//            info.modificationDate.isGreaterThan(self.startDatePicker.dateValue)
-//        }
-//        
-//        let infos1 = appContext.mediaInfos.take(20)
-        //print(filteredMediaInfos.count)
-        //print(validInfos.count)
-//        for aInfo in infos {
-//            self.mainMapView.addAnnotation(aInfo)
-//        }
-        
-        //self.mainMapView.addAnnotations(filteredMediaInfos)
-        //self.mainMapView.showAnnotations(self.mainMapView.annotations, animated: true)
     }
     
     func showMediaInfos(mediaInfos: [MediaInfo],mapBaseMode: MapBaseMode,mergeDistance: CLLocationDistance) {
@@ -118,11 +93,9 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         
         infoTV.string = "\(piDic[.kCountryArray]?.count),\(piDic[.kAdministrativeAreaArray]?.count),\(piDic[.kLocalityArray]?.count),\(piDic[.kSubLocalityArray]?.count),\(piDic[.kThoroughfareArray]?.count))"
         
-        sourceDic = MAMCoreDataManager.placemarkInfoDictionaryPro(mediaInfos: mediaInfos)
+        sourceDic = MAMCoreDataManager.placemarkHierarchicalInfo(mediaInfos: mediaInfos)
         print(sourceDic)
         self.locationOutlineView.reloadData()
-        //self.locationTreeController.content = dic
-        //self.locationTreeController.childrenKeyPath = ""
         
         var groupArray: Array<Array<GCLocationAnalyserProtocol>>? = nil
         if mapBaseMode == MapBaseMode.Moment {
@@ -140,25 +113,29 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         self.addedFootprintAnnotations = []
         
         for (groupIndex,currentGroup) in groupArray!.enumerated() {
-            print("groupIndex: \(groupIndex)")
+            //print("groupIndex: \(groupIndex)")
             
             let mediaGroupAnno = MediaGroupAnnotation.init()
             let footprintAnno = FootprintAnnotation.init()
             
             for (mediaInfoIndex,mediaObject) in currentGroup.enumerated() {
-                print("mediaInfoIndex: \(mediaInfoIndex)")
+                //print("mediaInfoIndex: \(mediaInfoIndex)")
                 let mediaInfo = mediaObject as! MediaInfo
                 let creationDate = mediaInfo.creationDate as! Date
                 
                 // 添加ID
                 mediaGroupAnno.mediaIdentifiers.append(mediaInfo.identifier!)
                 
+                if let urlString = mediaInfo.urlString{
+                    mediaGroupAnno.mediaURLs.append(URL.init(string: urlString)!)
+                }
+                
                 if mediaInfoIndex == 0 {
                     // 该组第1张照片
                     mediaGroupAnno.location = mediaInfo.location
                     
                     if let placeName = mediaInfo.coordinateInfo?.localizedPlaceString_Placemark{
-                        mediaGroupAnno.annoTitle = placeName
+                        mediaGroupAnno.annoTitle = placeName.placemarkBriefName()
                     }else{
                         mediaGroupAnno.annoTitle = NSLocalizedString("(Parsing location)", comment: "（正在解析位置）")
                     }
@@ -202,6 +179,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         }
         
         self.mainMapView.showAnnotations(self.mainMapView.annotations, animated: true)
+        self.mainMapView.selectAnnotation(self.mainMapView.annotations.first!, animated: true)
     }
     
     func addLineOverlays(annotations: [MKAnnotation]) {
@@ -272,12 +250,30 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         self.mainMapView.addOverlays(circleOverlays)
     }
     
+    // MARK: - Right Bottom Left Image View
+    @IBAction func previousImageBtnTD(_ sender: NSButton) {
+        self.indexOfCurrentImage -= 1
+        if self.indexOfCurrentImage >= 0 {
+            self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation[self.indexOfCurrentImage])
+        }else{
+            self.indexOfCurrentImage = 0
+        }
+    }
+    
+    @IBAction func nextImageBtnTD(_ sender: NSButton) {
+        self.indexOfCurrentImage += 1
+        if self.indexOfCurrentImage < mediaURLsFromSelectedMediaGroupAnnotation.count {
+            self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation[self.indexOfCurrentImage])
+        }else{
+            self.indexOfCurrentImage = mediaURLsFromSelectedMediaGroupAnnotation.count - 1
+        }
+    }
     
     // MARK: - MKMapViewDelegate
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
-        if annotation.isKind(of: MediaGroupAnnotation.self) {
+        if annotation is MediaGroupAnnotation {
             let pinAV = MKPinAnnotationView.init(annotation: annotation, reuseIdentifier: "pinAV")
             pinAV.pinTintColor = NSColor.blue
             pinAV.canShowCallout = true
@@ -286,12 +282,12 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             if let mediaInfo = appContext.mediaInfos.first(where: { (info) -> Bool in
                 info.identifier == mediaGroupAnno.mediaIdentifiers.first!
             }){
-                print("Add a MediaGroupAnnotation")
+                //print("Add a MediaGroupAnnotation")
                 let imageView = NSImageView.init(frame: NSRect.init(x: 0, y: 0, width: 80, height: 80))
                 //imageView.layer?.backgroundColor = NSColor.black.cgColor
                 imageView.image = NSImage.init(contentsOf: URL.init(string: mediaInfo.thumbnailURLString!)!)
                 //imageView.content
-                pinAV.leftCalloutAccessoryView = imageView
+                //pinAV.leftCalloutAccessoryView = imageView
                 //pinAV.rightCalloutAccessoryView = imageView
             }
             
@@ -303,17 +299,17 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     }
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if overlay.isKind(of: MKPolyline.self) {
+        if overlay is MKPolyline {
             let polylineRenderer = MKPolylineRenderer.init(overlay: overlay)
             polylineRenderer.lineWidth = 2
             polylineRenderer.strokeColor = NSColor.red
             return polylineRenderer
-        }else if overlay.isKind(of: MKPolygon.self) {
+        }else if overlay is MKPolygon{
             let polygonRenderer = MKPolygonRenderer.init(overlay: overlay)
             polygonRenderer.lineWidth = 1
             polygonRenderer.strokeColor = NSColor.red
             return polygonRenderer
-        }else if overlay.isKind(of: MKCircle.self) {
+        }else if overlay is MKCircle {
             let circleRenderer = MKCircleRenderer.init(overlay: overlay)
             circleRenderer.lineWidth = 1
             circleRenderer.fillColor = NSColor.green
@@ -321,6 +317,18 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             return circleRenderer
         }else {
             return MKOverlayRenderer.init(overlay: overlay)
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if view is MKPinAnnotationView {
+            if view.annotation is MediaGroupAnnotation{
+                let mediaGroupAnno = view.annotation as! MediaGroupAnnotation
+                mediaURLsFromSelectedMediaGroupAnnotation = mediaGroupAnno.mediaURLs
+                
+                self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation.first!)
+                self.indexOfCurrentImage = 0
+            }
         }
     }
     
@@ -348,7 +356,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     }
     
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-        print(item)
+        //print(item)
         if item != nil{
             let dic = item as! Dictionary<String,Any>
             let key = dic.keys.sorted()[index]
