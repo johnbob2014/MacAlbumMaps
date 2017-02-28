@@ -371,7 +371,11 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         
         let treeNode = item as! GCTreeNode
         
-        view.textField?.stringValue =  treeNode.title
+        if tableColumn?.identifier == "TC0" {
+            view.textField?.stringValue =  treeNode.title
+        }else if tableColumn?.identifier == "TC1"{
+            view.textField?.stringValue = "\(treeNode.representedObject as! Int)"
+        }
         
         return view
     }

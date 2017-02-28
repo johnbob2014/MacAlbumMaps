@@ -456,29 +456,33 @@ class MAMCoreDataManager: NSObject {
     /// - Returns: 可用于NSOutlineView的GCTreeNode
     class func placemarkHierarchicalInfoTreeNode(placemarkHierarchicalInfoDictionary: Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Dictionary<String, Int>>>>>) -> GCTreeNode{
         let rootTreeNode = GCTreeNode()
-        rootTreeNode.isTop = true
         rootTreeNode.title = NSLocalizedString("全部", comment: "")
         
+        var rootRO = 0
         for (countryTitle,countryDic) in placemarkHierarchicalInfoDictionary{
             let countryTN = GCTreeNode()
             countryTN.parent = rootTreeNode
             countryTN.title = countryTitle
             
+            var countryRO = 0
             for (administrativeAreaTitle,administrativeAreaDic) in countryDic {
                 let administrativeAreaTN = GCTreeNode()
                 administrativeAreaTN.parent = countryTN
                 administrativeAreaTN.title = administrativeAreaTitle
                 
+                var administrativeAreaRO = 0
                 for (localityTitle,localityDic) in administrativeAreaDic {
                     let localityTN = GCTreeNode()
                     localityTN.parent = administrativeAreaTN
                     localityTN.title = localityTitle
                     
+                    var localityRO = 0
                     for (subLocalityTitle,subLocalityDic) in localityDic {
                         let subLocalityTN = GCTreeNode()
                         subLocalityTN.parent = localityTN
                         subLocalityTN.title = subLocalityTitle
                         
+                        var subLocalityRO = 0
                         for (thoroughfareTitle,thoroughfareCount) in subLocalityDic {
                             let thoroughfareTN = GCTreeNode()
                             thoroughfareTN.parent = subLocalityTN
@@ -487,21 +491,35 @@ class MAMCoreDataManager: NSObject {
                             thoroughfareTN.isLeaf = true
                             thoroughfareTN.representedObject = thoroughfareCount
                             
+                            subLocalityRO += thoroughfareCount
                             subLocalityTN.children.append(thoroughfareTN)
                         }
                         
+                        subLocalityTN.representedObject = subLocalityRO
+                        
+                        localityRO += subLocalityRO
                         localityTN.children.append(subLocalityTN)
                     }
                     
+                    localityTN.representedObject = localityRO
+                    
+                    administrativeAreaRO += localityRO
                     administrativeAreaTN.children.append(localityTN)
                 }
                 
+                administrativeAreaTN.representedObject = administrativeAreaRO
+                
+                countryRO += administrativeAreaRO
                 countryTN.children.append(administrativeAreaTN)
             }
             
+            countryTN.representedObject = countryRO
+            
+            rootRO += countryRO
             rootTreeNode.children.append(countryTN)
         }
         
+        rootTreeNode.representedObject = rootRO
         return rootTreeNode
     }
     
