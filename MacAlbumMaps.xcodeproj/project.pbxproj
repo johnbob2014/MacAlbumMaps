@@ -17,6 +17,32 @@
 		4B339BD71E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BCE1E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift */; };
 		4B339BDA1E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BD11E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift */; };
 		4B339BDD1E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B339BD41E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift */; };
+		4B543D1B1E6655A40017E12C /* IcoMoon_Arrow-Bottom_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D171E6655A40017E12C /* IcoMoon_Arrow-Bottom_WBG.png */; };
+		4B543D1C1E6655A40017E12C /* IcoMoon_Arrow-Left_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D181E6655A40017E12C /* IcoMoon_Arrow-Left_WBG.png */; };
+		4B543D1D1E6655A40017E12C /* IcoMoon_Arrow-Right_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D191E6655A40017E12C /* IcoMoon_Arrow-Right_WBG.png */; };
+		4B543D1E1E6655A40017E12C /* IcoMoon_Arrow-Top_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D1A1E6655A40017E12C /* IcoMoon_Arrow-Top_WBG.png */; };
+		4B543D351E6659C90017E12C /* IcoMoon_Download_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D1F1E6659C90017E12C /* IcoMoon_Download_WBG.png */; };
+		4B543D361E6659C90017E12C /* IcoMoon_Flag_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D201E6659C90017E12C /* IcoMoon_Flag_WBG.png */; };
+		4B543D371E6659C90017E12C /* IcoMoon_Glasses_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D211E6659C90017E12C /* IcoMoon_Glasses_WBG.png */; };
+		4B543D381E6659C90017E12C /* IcoMoon_Heart-Fill_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D221E6659C90017E12C /* IcoMoon_Heart-Fill_WBG.png */; };
+		4B543D391E6659C90017E12C /* IcoMoon_Heart-Stroke_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D231E6659C90017E12C /* IcoMoon_Heart-Stroke_WBG.png */; };
+		4B543D3A1E6659C90017E12C /* IcoMoon_MapMarker_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D241E6659C90017E12C /* IcoMoon_MapMarker_WBG.png */; };
+		4B543D3B1E6659C90017E12C /* IcoMoon_Minus_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D251E6659C90017E12C /* IcoMoon_Minus_WBG.png */; };
+		4B543D3C1E6659C90017E12C /* IcoMoon_Monitor_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D261E6659C90017E12C /* IcoMoon_Monitor_WBG.png */; };
+		4B543D3D1E6659C90017E12C /* IcoMoon_PieChart_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D271E6659C90017E12C /* IcoMoon_PieChart_WBG.png */; };
+		4B543D3E1E6659C90017E12C /* IcoMoon_Play_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D281E6659C90017E12C /* IcoMoon_Play_WBG.png */; };
+		4B543D3F1E6659C90017E12C /* IcoMoon_Play-Rect_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D291E6659C90017E12C /* IcoMoon_Play-Rect_WBG.png */; };
+		4B543D401E6659C90017E12C /* IcoMoon_Plus_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D2A1E6659C90017E12C /* IcoMoon_Plus_WBG.png */; };
+		4B543D411E6659C90017E12C /* IcoMoon_Repeat_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D2B1E6659C90017E12C /* IcoMoon_Repeat_WBG.png */; };
+		4B543D421E6659C90017E12C /* IcoMoon_Setting_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D2C1E6659C90017E12C /* IcoMoon_Setting_WBG.png */; };
+		4B543D431E6659C90017E12C /* IcoMoon_Share_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D2D1E6659C90017E12C /* IcoMoon_Share_WBG.png */; };
+		4B543D441E6659C90017E12C /* IcoMoon_Share2_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D2E1E6659C90017E12C /* IcoMoon_Share2_WBG.png */; };
+		4B543D451E6659C90017E12C /* IcoMoon_StatisticBar1_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D2F1E6659C90017E12C /* IcoMoon_StatisticBar1_WBG.png */; };
+		4B543D461E6659C90017E12C /* IcoMoon_Trophy_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D301E6659C90017E12C /* IcoMoon_Trophy_WBG.png */; };
+		4B543D471E6659C90017E12C /* IcoMoon_User_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D311E6659C90017E12C /* IcoMoon_User_WBG.png */; };
+		4B543D481E6659C90017E12C /* IcoMoon_User-Follow_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D321E6659C90017E12C /* IcoMoon_User-Follow_WBG.png */; };
+		4B543D491E6659C90017E12C /* IcoMoon_User-On_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D331E6659C90017E12C /* IcoMoon_User-On_WBG.png */; };
+		4B543D4A1E6659C90017E12C /* IcoMoon_Video_WBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B543D341E6659C90017E12C /* IcoMoon_Video_WBG.png */; };
 		4B656F471E5D0C1F0074BFA1 /* MAMCoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B656F461E5D0C1F0074BFA1 /* MAMCoreDataManager.swift */; };
 		4B665B7C1E652B94008F5095 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 4B665B7B1E652B94008F5095 /* AppIcon.icns */; };
 		4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76B3381E567CD2003BED65 /* MediaMapVC.swift */; };
@@ -41,6 +67,32 @@
 		4B339BCE1E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoordinateInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
 		4B339BD11E5C131F00401B0C /* FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FootprintsRepositoryInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
 		4B339BD41E5C131F00401B0C /* MediaInfo+AlecrimCoreDataAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MediaInfo+AlecrimCoreDataAttributes.swift"; sourceTree = "<group>"; };
+		4B543D171E6655A40017E12C /* IcoMoon_Arrow-Bottom_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_Arrow-Bottom_WBG.png"; path = "MAMResources/IcoMoon_Arrow-Bottom_WBG.png"; sourceTree = "<group>"; };
+		4B543D181E6655A40017E12C /* IcoMoon_Arrow-Left_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_Arrow-Left_WBG.png"; path = "MAMResources/IcoMoon_Arrow-Left_WBG.png"; sourceTree = "<group>"; };
+		4B543D191E6655A40017E12C /* IcoMoon_Arrow-Right_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_Arrow-Right_WBG.png"; path = "MAMResources/IcoMoon_Arrow-Right_WBG.png"; sourceTree = "<group>"; };
+		4B543D1A1E6655A40017E12C /* IcoMoon_Arrow-Top_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_Arrow-Top_WBG.png"; path = "MAMResources/IcoMoon_Arrow-Top_WBG.png"; sourceTree = "<group>"; };
+		4B543D1F1E6659C90017E12C /* IcoMoon_Download_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Download_WBG.png; path = MAMResources/IcoMoon_Download_WBG.png; sourceTree = "<group>"; };
+		4B543D201E6659C90017E12C /* IcoMoon_Flag_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Flag_WBG.png; path = MAMResources/IcoMoon_Flag_WBG.png; sourceTree = "<group>"; };
+		4B543D211E6659C90017E12C /* IcoMoon_Glasses_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Glasses_WBG.png; path = MAMResources/IcoMoon_Glasses_WBG.png; sourceTree = "<group>"; };
+		4B543D221E6659C90017E12C /* IcoMoon_Heart-Fill_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_Heart-Fill_WBG.png"; path = "MAMResources/IcoMoon_Heart-Fill_WBG.png"; sourceTree = "<group>"; };
+		4B543D231E6659C90017E12C /* IcoMoon_Heart-Stroke_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_Heart-Stroke_WBG.png"; path = "MAMResources/IcoMoon_Heart-Stroke_WBG.png"; sourceTree = "<group>"; };
+		4B543D241E6659C90017E12C /* IcoMoon_MapMarker_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_MapMarker_WBG.png; path = MAMResources/IcoMoon_MapMarker_WBG.png; sourceTree = "<group>"; };
+		4B543D251E6659C90017E12C /* IcoMoon_Minus_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Minus_WBG.png; path = MAMResources/IcoMoon_Minus_WBG.png; sourceTree = "<group>"; };
+		4B543D261E6659C90017E12C /* IcoMoon_Monitor_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Monitor_WBG.png; path = MAMResources/IcoMoon_Monitor_WBG.png; sourceTree = "<group>"; };
+		4B543D271E6659C90017E12C /* IcoMoon_PieChart_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_PieChart_WBG.png; path = MAMResources/IcoMoon_PieChart_WBG.png; sourceTree = "<group>"; };
+		4B543D281E6659C90017E12C /* IcoMoon_Play_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Play_WBG.png; path = MAMResources/IcoMoon_Play_WBG.png; sourceTree = "<group>"; };
+		4B543D291E6659C90017E12C /* IcoMoon_Play-Rect_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_Play-Rect_WBG.png"; path = "MAMResources/IcoMoon_Play-Rect_WBG.png"; sourceTree = "<group>"; };
+		4B543D2A1E6659C90017E12C /* IcoMoon_Plus_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Plus_WBG.png; path = MAMResources/IcoMoon_Plus_WBG.png; sourceTree = "<group>"; };
+		4B543D2B1E6659C90017E12C /* IcoMoon_Repeat_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Repeat_WBG.png; path = MAMResources/IcoMoon_Repeat_WBG.png; sourceTree = "<group>"; };
+		4B543D2C1E6659C90017E12C /* IcoMoon_Setting_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Setting_WBG.png; path = MAMResources/IcoMoon_Setting_WBG.png; sourceTree = "<group>"; };
+		4B543D2D1E6659C90017E12C /* IcoMoon_Share_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Share_WBG.png; path = MAMResources/IcoMoon_Share_WBG.png; sourceTree = "<group>"; };
+		4B543D2E1E6659C90017E12C /* IcoMoon_Share2_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Share2_WBG.png; path = MAMResources/IcoMoon_Share2_WBG.png; sourceTree = "<group>"; };
+		4B543D2F1E6659C90017E12C /* IcoMoon_StatisticBar1_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_StatisticBar1_WBG.png; path = MAMResources/IcoMoon_StatisticBar1_WBG.png; sourceTree = "<group>"; };
+		4B543D301E6659C90017E12C /* IcoMoon_Trophy_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Trophy_WBG.png; path = MAMResources/IcoMoon_Trophy_WBG.png; sourceTree = "<group>"; };
+		4B543D311E6659C90017E12C /* IcoMoon_User_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_User_WBG.png; path = MAMResources/IcoMoon_User_WBG.png; sourceTree = "<group>"; };
+		4B543D321E6659C90017E12C /* IcoMoon_User-Follow_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_User-Follow_WBG.png"; path = "MAMResources/IcoMoon_User-Follow_WBG.png"; sourceTree = "<group>"; };
+		4B543D331E6659C90017E12C /* IcoMoon_User-On_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IcoMoon_User-On_WBG.png"; path = "MAMResources/IcoMoon_User-On_WBG.png"; sourceTree = "<group>"; };
+		4B543D341E6659C90017E12C /* IcoMoon_Video_WBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = IcoMoon_Video_WBG.png; path = MAMResources/IcoMoon_Video_WBG.png; sourceTree = "<group>"; };
 		4B656F461E5D0C1F0074BFA1 /* MAMCoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAMCoreDataManager.swift; sourceTree = "<group>"; };
 		4B665B7B1E652B94008F5095 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AppIcon.icns; path = MAMResources/AppIcon.icns; sourceTree = "<group>"; };
 		4B76B3381E567CD2003BED65 /* MediaMapVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaMapVC.swift; sourceTree = "<group>"; };
@@ -104,7 +156,33 @@
 		4B665B7A1E652B87008F5095 /* MAMResources */ = {
 			isa = PBXGroup;
 			children = (
+				4B543D1F1E6659C90017E12C /* IcoMoon_Download_WBG.png */,
+				4B543D201E6659C90017E12C /* IcoMoon_Flag_WBG.png */,
+				4B543D211E6659C90017E12C /* IcoMoon_Glasses_WBG.png */,
+				4B543D221E6659C90017E12C /* IcoMoon_Heart-Fill_WBG.png */,
+				4B543D231E6659C90017E12C /* IcoMoon_Heart-Stroke_WBG.png */,
+				4B543D241E6659C90017E12C /* IcoMoon_MapMarker_WBG.png */,
+				4B543D251E6659C90017E12C /* IcoMoon_Minus_WBG.png */,
+				4B543D261E6659C90017E12C /* IcoMoon_Monitor_WBG.png */,
+				4B543D271E6659C90017E12C /* IcoMoon_PieChart_WBG.png */,
+				4B543D281E6659C90017E12C /* IcoMoon_Play_WBG.png */,
+				4B543D291E6659C90017E12C /* IcoMoon_Play-Rect_WBG.png */,
+				4B543D2A1E6659C90017E12C /* IcoMoon_Plus_WBG.png */,
+				4B543D2B1E6659C90017E12C /* IcoMoon_Repeat_WBG.png */,
+				4B543D2C1E6659C90017E12C /* IcoMoon_Setting_WBG.png */,
+				4B543D2D1E6659C90017E12C /* IcoMoon_Share_WBG.png */,
+				4B543D2E1E6659C90017E12C /* IcoMoon_Share2_WBG.png */,
+				4B543D2F1E6659C90017E12C /* IcoMoon_StatisticBar1_WBG.png */,
+				4B543D301E6659C90017E12C /* IcoMoon_Trophy_WBG.png */,
+				4B543D311E6659C90017E12C /* IcoMoon_User_WBG.png */,
+				4B543D321E6659C90017E12C /* IcoMoon_User-Follow_WBG.png */,
+				4B543D331E6659C90017E12C /* IcoMoon_User-On_WBG.png */,
+				4B543D341E6659C90017E12C /* IcoMoon_Video_WBG.png */,
 				4B665B7B1E652B94008F5095 /* AppIcon.icns */,
+				4B543D171E6655A40017E12C /* IcoMoon_Arrow-Bottom_WBG.png */,
+				4B543D181E6655A40017E12C /* IcoMoon_Arrow-Left_WBG.png */,
+				4B543D191E6655A40017E12C /* IcoMoon_Arrow-Right_WBG.png */,
+				4B543D1A1E6655A40017E12C /* IcoMoon_Arrow-Top_WBG.png */,
 			);
 			name = MAMResources;
 			sourceTree = "<group>";
@@ -228,9 +306,35 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B543D481E6659C90017E12C /* IcoMoon_User-Follow_WBG.png in Resources */,
+				4B543D491E6659C90017E12C /* IcoMoon_User-On_WBG.png in Resources */,
+				4B543D421E6659C90017E12C /* IcoMoon_Setting_WBG.png in Resources */,
+				4B543D401E6659C90017E12C /* IcoMoon_Plus_WBG.png in Resources */,
+				4B543D1D1E6655A40017E12C /* IcoMoon_Arrow-Right_WBG.png in Resources */,
+				4B543D441E6659C90017E12C /* IcoMoon_Share2_WBG.png in Resources */,
+				4B543D1C1E6655A40017E12C /* IcoMoon_Arrow-Left_WBG.png in Resources */,
+				4B543D3B1E6659C90017E12C /* IcoMoon_Minus_WBG.png in Resources */,
+				4B543D411E6659C90017E12C /* IcoMoon_Repeat_WBG.png in Resources */,
 				4B8FB5B31E554EFB00400F58 /* Assets.xcassets in Resources */,
 				4B8FB5B61E554EFB00400F58 /* Main.storyboard in Resources */,
+				4B543D1B1E6655A40017E12C /* IcoMoon_Arrow-Bottom_WBG.png in Resources */,
+				4B543D4A1E6659C90017E12C /* IcoMoon_Video_WBG.png in Resources */,
+				4B543D351E6659C90017E12C /* IcoMoon_Download_WBG.png in Resources */,
+				4B543D3F1E6659C90017E12C /* IcoMoon_Play-Rect_WBG.png in Resources */,
+				4B543D1E1E6655A40017E12C /* IcoMoon_Arrow-Top_WBG.png in Resources */,
+				4B543D361E6659C90017E12C /* IcoMoon_Flag_WBG.png in Resources */,
+				4B543D371E6659C90017E12C /* IcoMoon_Glasses_WBG.png in Resources */,
 				4B665B7C1E652B94008F5095 /* AppIcon.icns in Resources */,
+				4B543D471E6659C90017E12C /* IcoMoon_User_WBG.png in Resources */,
+				4B543D451E6659C90017E12C /* IcoMoon_StatisticBar1_WBG.png in Resources */,
+				4B543D3C1E6659C90017E12C /* IcoMoon_Monitor_WBG.png in Resources */,
+				4B543D391E6659C90017E12C /* IcoMoon_Heart-Stroke_WBG.png in Resources */,
+				4B543D3D1E6659C90017E12C /* IcoMoon_PieChart_WBG.png in Resources */,
+				4B543D461E6659C90017E12C /* IcoMoon_Trophy_WBG.png in Resources */,
+				4B543D3A1E6659C90017E12C /* IcoMoon_MapMarker_WBG.png in Resources */,
+				4B543D431E6659C90017E12C /* IcoMoon_Share_WBG.png in Resources */,
+				4B543D381E6659C90017E12C /* IcoMoon_Heart-Fill_WBG.png in Resources */,
+				4B543D3E1E6659C90017E12C /* IcoMoon_Play_WBG.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,19 +12,14 @@ import MediaLibrary
 
 class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOutlineViewDataSource{
     
+    // MARK: - 属性
     @IBOutlet var locationTreeController: NSTreeController!
-    
-    @IBOutlet weak var locationOutlineView: NSOutlineView!
-    var rootTreeNode = GCTreeNode()
     
     @IBOutlet weak var mainMapView: MKMapView!
     
-    @IBOutlet weak var startDatePicker: NSDatePicker!
-    @IBOutlet weak var endDatePicker: NSDatePicker!
-    @IBOutlet weak var mergeDistanceForMomentTF: NSTextField!
-    @IBOutlet weak var momentBtn: NSButton!
     
-    @IBOutlet var infoTV: NSTextView!
+    
+    
     
     @IBOutlet weak var imageView: NSImageView!
     var mediaURLsFromSelectedMediaGroupAnnotation = [URL]()
@@ -38,15 +33,26 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     var addedMediaGroupAnnotations = [MediaGroupAnnotation]()
     var addedFootprintAnnotations = [FootprintAnnotation]()
     
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
+        
+        self.addNotificationObserver()
         
         self.initMapView()
         
         self.initControls()
         
         self.updateMediaInfos()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func addNotificationObserver() {
+        NotificationCenter.default.addObserver(self, selector:#selector(didReceiveNotification(noti:)), name: NSNotification.Name(rawValue: "Placemark_Is_Updating"), object: nil)
     }
     
     private func initMapView(){
@@ -79,6 +85,14 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         mediaLibraryLoader.asyncLoadMedia()
     }
     
+    // MARK: - 左侧视图 Left View
+    
+    // MARK: - 左侧时刻选项栏
+    @IBOutlet weak var startDatePicker: NSDatePicker!
+    @IBOutlet weak var endDatePicker: NSDatePicker!
+    @IBOutlet weak var mergeDistanceForMomentTF: NSTextField!
+    @IBOutlet weak var momentBtn: NSButton!
+
     @IBAction func momentBtnTD(_ sender: NSButton) {
         self.mainMapView.removeAnnotations(self.mainMapView.annotations)
         
@@ -91,16 +105,133 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: MapBaseMode.Location,mergeDistance: 200)
     }
     
-    func showMediaInfos(mediaInfos: [MediaInfo],mapBaseMode: MapBaseMode,mergeDistance: CLLocationDistance) {
+    
+    // MARK: - 左侧地址选项栏
+    // MARK: - 列表视图 
+    @IBOutlet weak var locationOutlineView: NSOutlineView!
+    var rootTreeNode = GCTreeNode()
+    
+    // NSOutlineViewDataSource
+    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+        if item != nil{
+            let treeNode = item as! GCTreeNode
+            return treeNode.numberOfChildren
+        }else{
+            return rootTreeNode.numberOfChildren
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+        let treeNode = item as! GCTreeNode
+        if treeNode.isLeaf {
+            return false
+        }else{
+            return true
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+        //print(item)
+        if item != nil{
+            let treeNode = item as! GCTreeNode
+            return treeNode.childAtIndex(index: index)!
+        }else{
+            return rootTreeNode
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+        let view = outlineView.make(withIdentifier: (tableColumn?.identifier)!, owner: self) as! NSTableCellView
+        
+        let treeNode = item as! GCTreeNode
+        
+        if tableColumn?.identifier == "TC0" {
+            view.textField?.stringValue =  treeNode.title
+        }else if tableColumn?.identifier == "TC1"{
+            view.textField?.stringValue = "\(treeNode.representedObject as! Int)"
+        }
+        
+        return view
+    }
+    
+    // NSOutlineViewDelegate
+    func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
+        return false
+    }
+    
+    // MARK: - 左侧地址信息解析显示
+    @IBOutlet weak var placemarkInfoTF: NSTextField!
+    func didReceiveNotification(noti: NSNotification) {
+        print(noti)
+        placemarkInfoTF.stringValue = noti.userInfo!["Placemark_InfoString"] as! String
+    }
+    
+    // MARK: - 左侧统计信息
+    @IBOutlet var statisticalInfoTV: NSTextView!
+
+    // MARK: - 右侧视图 Right View
+    
+    
+    
+    // MARK: - 右侧导航按钮 Navigation
+    @IBAction func firstBtnTD(_ sender: NSButton) {
+        if let first = self.mainMapView.annotations.first{
+            self.mainMapView.setCenter(first.coordinate, animated: false)
+            self.mainMapView.selectAnnotation(first, animated: true)
+        }
+        
+    }
+    
+    @IBAction func previousBtnTD(_ sender: NSButton) {
+    }
+    
+    @IBAction func playBtnTD(_ sender: NSButton) {
+    }
+    
+    @IBAction func nextBtnTD(_ sender: NSButton) {
+    }
+    
+    @IBAction func lastBtnTD(_ sender: NSButton) {
+    }
+    
+    // MARK: - 右侧底部图片视图 Right Bottom Left Image View
+    @IBAction func previousImageBtnTD(_ sender: NSButton) {
+        self.indexOfCurrentImage -= 1
+        if self.indexOfCurrentImage >= 0 {
+            self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation[self.indexOfCurrentImage])
+        }else{
+            self.indexOfCurrentImage = 0
+        }
+    }
+    
+    @IBAction func nextImageBtnTD(_ sender: NSButton) {
+        self.indexOfCurrentImage += 1
+        if self.indexOfCurrentImage < mediaURLsFromSelectedMediaGroupAnnotation.count {
+            self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation[self.indexOfCurrentImage])
+        }else{
+            self.indexOfCurrentImage = mediaURLsFromSelectedMediaGroupAnnotation.count - 1
+        }
+    }
+    
+    // MARK: - 相册地图核心方法
+    
+    func statisticalInfos(mediaInfos: [MediaInfo]) -> String {
+        var statisticalString = ""
+        
         let piDic = MAMCoreDataManager.placemarkInfoDictionary(mediaInfos: mediaInfos)
+        statisticalString += NSLocalizedString("Location statistical info: ", comment: "地点统计信息：") + "\n"
+        statisticalString += NSLocalizedString("Country: ", comment: "国家：") + "\(piDic[.kCountryArray]!.count)\n"
+        statisticalString += NSLocalizedString("AdministrativeArea: ", comment: "省：") + "\(piDic[.kAdministrativeAreaArray]!.count)\n"
+        statisticalString += NSLocalizedString("Locality: ", comment: "市：") + "\(piDic[.kLocalityArray]!.count)\n"
+        statisticalString += NSLocalizedString("SubLocality: ", comment: "县乡：") + "\(piDic[.kSubLocalityArray]!.count)\n"
+        statisticalString += NSLocalizedString("Thoroughfare: ", comment: "村镇街道：") + "\(piDic[.kThoroughfareArray]!.count)"
         
-        infoTV.string = "\(piDic[.kCountryArray]?.count),\(piDic[.kAdministrativeAreaArray]?.count),\(piDic[.kLocalityArray]?.count),\(piDic[.kSubLocalityArray]?.count),\(piDic[.kThoroughfareArray]?.count))"
+        return statisticalString
+    }
+    
+    func showMediaInfos(mediaInfos: [MediaInfo],mapBaseMode: MapBaseMode,mergeDistance: CLLocationDistance) {
         
-        //sourceDic = MAMCoreDataManager.placemarkHierarchicalInfo(mediaInfos: mediaInfos)
-        //print(sourceDic)
-        //rootTreeNode =
-        
-        //self.locationOutlineView.reloadData()
+        statisticalInfoTV.string = self.statisticalInfos(mediaInfos: mediaInfos)
         
         var groupArray: Array<Array<GCLocationAnalyserProtocol>>? = nil
         if mapBaseMode == MapBaseMode.Moment {
@@ -255,26 +386,9 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         self.mainMapView.addOverlays(circleOverlays)
     }
     
-    // MARK: - Right Bottom Left Image View
-    @IBAction func previousImageBtnTD(_ sender: NSButton) {
-        self.indexOfCurrentImage -= 1
-        if self.indexOfCurrentImage >= 0 {
-            self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation[self.indexOfCurrentImage])
-        }else{
-            self.indexOfCurrentImage = 0
-        }
-    }
     
-    @IBAction func nextImageBtnTD(_ sender: NSButton) {
-        self.indexOfCurrentImage += 1
-        if self.indexOfCurrentImage < mediaURLsFromSelectedMediaGroupAnnotation.count {
-            self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation[self.indexOfCurrentImage])
-        }else{
-            self.indexOfCurrentImage = mediaURLsFromSelectedMediaGroupAnnotation.count - 1
-        }
-    }
     
-    // MARK: - MKMapViewDelegate
+    // MARK: - 地图视图代理方法 MKMapViewDelegate
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -336,109 +450,5 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             }
         }
     }
-    
-    // MARK: - NSOutlineViewDataSource
-    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-        if item != nil{
-            let treeNode = item as! GCTreeNode
-            return treeNode.numberOfChildren
-        }else{
-            return rootTreeNode.numberOfChildren
-        }
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        let treeNode = item as! GCTreeNode
-        if treeNode.isLeaf {
-            return false
-        }else{
-            return true
-        }
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-        //print(item)
-        if item != nil{
-            let treeNode = item as! GCTreeNode
-            return treeNode.childAtIndex(index: index)!
-        }else{
-            return rootTreeNode
-        }
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
-        let view = outlineView.make(withIdentifier: (tableColumn?.identifier)!, owner: self) as! NSTableCellView
-        
-        let treeNode = item as! GCTreeNode
-        
-        if tableColumn?.identifier == "TC0" {
-            view.textField?.stringValue =  treeNode.title
-        }else if tableColumn?.identifier == "TC1"{
-            view.textField?.stringValue = "\(treeNode.representedObject as! Int)"
-        }
-        
-        return view
-    }
-    
-    /*
-    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-        if item != nil{
-            let dic = item as! Dictionary<String,Any>
-            return dic.keys.count
-        }else{
-            return sourceDic.keys.count
-        }
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        let dic = item as! Dictionary<String,Any>
-        if let first = dic.values.first{
-            if first is Int {
-                return false
-            }else{
-                return true
-            }
-        }else{
-            return true
-        }
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-        //print(item)
-        if item != nil{
-            let dic = item as! Dictionary<String,Any>
-            let key = dic.keys.sorted()[index]
-            return dic[key]!
-        }else{
-            return sourceDic
-        }
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
-        let view = outlineView.make(withIdentifier: (tableColumn?.identifier)!, owner: self) as! NSTableCellView
-        
-        let dic = item as! Dictionary<String,Any>
-        
-        view.textField?.stringValue =  "Node"//dic.keys.sorted().first
-
-        
-        return view
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
-        
-        if item != nil{
-            let dic = item as! Dictionary<String,Any>
-            return "Node"//dic.keys.sorted().first
-        }else{
-            return "/"
-        }
-    }
- */
-    // MARK: - NSOutlineViewDelegate
-    func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
-        return false
-    }
-    
     
 }

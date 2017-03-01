@@ -35,12 +35,11 @@ extension CoordinateInfo : MKAnnotation{
     }
     
     // MARK: -
-    func updatePlacemark(geocoder: CLGeocoder) {
+    func updatePlacemark(geocoder: CLGeocoder,completionHandler:((Bool, String?) -> Void)? = nil) {
         geocoder.reverseGeocodeLocation(CLLocation.init(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude)) { (placemarks, error) in
             if error == nil{
                 
                 if let placemark = placemarks?.last{
-                    
                     
                     self.name_Placemark = placemark.name
                     self.ccISOcountryCode_Placemark = placemark.isoCountryCode
@@ -58,12 +57,16 @@ extension CoordinateInfo : MKAnnotation{
                     self.localizedPlaceString_Placemark = placemark.localizedPlaceString(inReverseOrder: false, withInlandWaterAndOcean: false)
                     
                     print(self.localizedPlaceString_Placemark!)
+                    completionHandler?(true,self.localizedPlaceString_Placemark!)
                     self.reverseGeocodeSucceed = NSNumber.init(value: true)
                     try! appContext.save()
+                }else{
+                    completionHandler?(false, nil)
                 }
                 
             }else{
                 self.reverseGeocodeSucceed = NSNumber.init(value: false)
+                completionHandler?(false, nil)
             }
             
             //try! self.managedObjectContext?.save()
@@ -282,19 +285,35 @@ class MAMCoreDataManager: NSObject {
     
     /// 更新CoordinateInfo的Placemark
     class func asyncUpdatePlacemarks() -> Void {
-        DispatchQueue.global(qos: .default).async{
+        DispatchQueue.global(qos: .background).async{
             let geocoder = CLGeocoder.init()
+            let total = appContext.coordinateInfos.count()
             let coordinateInfos = appContext.coordinateInfos.filter(){ $0.reverseGeocodeSucceed?.boolValue == false }
-            let total = coordinateInfos.count
-            for (index,coordinateInfo) in coordinateInfos.enumerated(){
-                print("Parsing:\(index+1)/\(total)")
-                coordinateInfo.updatePlacemark(geocoder: geocoder)
-                Thread.sleep(forTimeInterval: 1.0)
-
-//                if coordinateInfo.reverseGeocodeSucceed?.boolValue == false{
-//                                    }
+            
+            if coordinateInfos.count == 0{
+                // 已经全部解析完成
+                DispatchQueue.main.async {
+                    let infoString = NSLocalizedString("Total Coordinate:", comment: "座标点总计：") + "\(total) " + NSLocalizedString("Parsing is complete!", comment: "地址信息已全部解析完成！")
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "Placemark_Is_Updating"), object: nil, userInfo: ["Placemark_InfoString":infoString])
+                }
             }
             
+            let reverseGeocodeSucceedCount = total - coordinateInfos.count
+            
+            for (index,coordinateInfo) in coordinateInfos.enumerated(){
+                
+                coordinateInfo.updatePlacemark(geocoder: geocoder){
+                    (succeeded,placemarkString) -> Void in
+                    var infoString = NSLocalizedString("Total:", comment: "总计：") + "\(total)  " + NSLocalizedString("Now parsing:", comment: "正在解析：") + "\(reverseGeocodeSucceedCount+index+1)\n"
+                    infoString += succeeded ? placemarkString! : NSLocalizedString("Parse failed!", comment: "解析失败！")
+                    
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "Placemark_Is_Updating"), object: nil, userInfo: ["Placemark_InfoString":infoString])
+                    }
+
+                }
+                Thread.sleep(forTimeInterval: 1.0)
+            }
         }
     }
     
@@ -311,7 +330,6 @@ class MAMCoreDataManager: NSObject {
         var subLocalityArray = [String]()
         var thoroughfareArray = [String]()
         var subThoroughfareArray = [String]()
-        
         
         for info in coordinateInfos{
             if let country_Placemark = info.country_Placemark {
@@ -356,10 +374,6 @@ class MAMCoreDataManager: NSObject {
                 }
             }
         }
-        
-        let countryTN = NSTreeNode.init(representedObject: countryArray)
-        print(countryTN.children!)
-        print(countryTN.representedObject!)
 
         return [.kCountryArray:countryArray,
                 .kAdministrativeAreaArray:administrativeAreaArray,
