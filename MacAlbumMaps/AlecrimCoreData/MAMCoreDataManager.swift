@@ -77,13 +77,65 @@ extension CoordinateInfo : MKAnnotation{
 
 extension MediaInfo : MKAnnotation,GCLocationAnalyserProtocol{
     
-    // MARK: - MKAnnotation Protocol
+    // MKAnnotation Protocol
     public var coordinate: CLLocationCoordinate2D {
         return (self.coordinateInfo?.coordinate)!
     }
     
+    // GCLocationAnalyserProtocol
     var location: CLLocation{
         return CLLocation.init(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude)
+    }
+    
+    var detailInfomation: String{
+        get{
+            var detail = ""
+            
+            // 添加照片信息
+            var name = self.name
+            if name == nil {
+                if let urlString = self.urlString{
+                    name = URL.init(string: urlString)!.lastPathComponent
+                }else{
+                    name = ""
+                }
+            }
+            detail += NSLocalizedString("Name: ",comment: "名称：") + name! + "\n"
+            
+            if let contentType = self.contentType{
+                detail += NSLocalizedString("Content Type: ",comment: "类型：") + contentType + "\n"
+            }
+            
+            var fileSizeString = "\(self.fileSize)"
+            if self.fileSize > 1024 * 1024 {
+                fileSizeString = "\(self.fileSize/1024/1024)M"
+            }else if self.fileSize > 1024{
+                fileSizeString = "\(self.fileSize/1024)KB"
+            }
+            detail += NSLocalizedString("File Size: ",comment: "大小：") + fileSizeString + "\n"
+            
+            if let creationDate = self.creationDate{
+                detail += NSLocalizedString("Taken Date: ",comment: "拍摄日期：") + (creationDate as Date).stringWithDefaultFormat() + "\n"
+            }
+            
+            if let modificationDate = self.modificationDate{
+                detail += NSLocalizedString("Imported Date: ",comment: "导入日期：") + (modificationDate as Date).stringWithDefaultFormat() + "\n"
+            }
+            
+            // 添加地址信息
+            if let coordinateInfo = self.coordinateInfo{
+                detail += coordinateInfo.coordinate.latitude > 0 ? NSLocalizedString("N. ",comment: "北纬 "):NSLocalizedString("S. ",comment: "南纬 ")
+                detail += "\(fabs(coordinateInfo.coordinate.latitude))\n"
+                detail += coordinateInfo.coordinate.longitude > 0 ? NSLocalizedString("E. ",comment: "东经 "):NSLocalizedString("W. ",comment: "西经 ")
+                detail += "\(fabs(coordinateInfo.coordinate.longitude))\n"
+                
+                if let localizedPlaceString = coordinateInfo.localizedPlaceString_Placemark{
+                    detail += localizedPlaceString
+                }
+            }
+            
+            return detail
+        }
     }
 }
 
@@ -117,8 +169,8 @@ class MAMCoreDataManager: NSObject {
         let contentTypeStr = attrs[MLMediaObjectHiddenAttributeKeys.contentTypeKey] as! String
         
         // We only want photos, not movies or older PICT formats (PICT image files are not supported in a sandboxed environment).
-        if ((contentTypeStr != kUTTypePICT as String) && (contentTypeStr != kUTTypeQuickTimeMovie as String)){
-            
+        // if ((contentTypeStr != kUTTypePICT as String) && (contentTypeStr != kUTTypeQuickTimeMovie as String)){
+        if (contentTypeStr != kUTTypePICT as String){
             if let latitudeNumber = attrs[MLMediaObjectHiddenAttributeKeys.latitudeKey]{
                 if let longitudeNumber = attrs[MLMediaObjectHiddenAttributeKeys.longitudeKey]{
                     let latitude = (latitudeNumber as! NSNumber).doubleValue

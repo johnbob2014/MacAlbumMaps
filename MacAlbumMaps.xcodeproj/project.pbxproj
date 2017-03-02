@@ -46,7 +46,7 @@
 		4B656F471E5D0C1F0074BFA1 /* MAMCoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B656F461E5D0C1F0074BFA1 /* MAMCoreDataManager.swift */; };
 		4B665B7C1E652B94008F5095 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 4B665B7B1E652B94008F5095 /* AppIcon.icns */; };
 		4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76B3381E567CD2003BED65 /* MediaMapVC.swift */; };
-		4B88D0831E5E8A6D008A69BC /* MediaGroupAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D0821E5E8A6D008A69BC /* MediaGroupAnnotation.swift */; };
+		4B88D0831E5E8A6D008A69BC /* MediaInfoGroupAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D0821E5E8A6D008A69BC /* MediaInfoGroupAnnotation.swift */; };
 		4B88D0881E5E8ADE008A69BC /* GCLocationAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D0861E5E8ADE008A69BC /* GCLocationAnalyser.swift */; };
 		4B88D0891E5E8ADE008A69BC /* GCMediaLibraryLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D0871E5E8ADE008A69BC /* GCMediaLibraryLoader.swift */; };
 		4B88D08B1E5E90B4008A69BC /* FootprintAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B88D08A1E5E90B4008A69BC /* FootprintAnnotation.swift */; };
@@ -96,7 +96,7 @@
 		4B656F461E5D0C1F0074BFA1 /* MAMCoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAMCoreDataManager.swift; sourceTree = "<group>"; };
 		4B665B7B1E652B94008F5095 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AppIcon.icns; path = MAMResources/AppIcon.icns; sourceTree = "<group>"; };
 		4B76B3381E567CD2003BED65 /* MediaMapVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaMapVC.swift; sourceTree = "<group>"; };
-		4B88D0821E5E8A6D008A69BC /* MediaGroupAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaGroupAnnotation.swift; path = MAMModels/MediaGroupAnnotation.swift; sourceTree = "<group>"; };
+		4B88D0821E5E8A6D008A69BC /* MediaInfoGroupAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaInfoGroupAnnotation.swift; path = MAMModels/MediaInfoGroupAnnotation.swift; sourceTree = "<group>"; };
 		4B88D0861E5E8ADE008A69BC /* GCLocationAnalyser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCLocationAnalyser.swift; sourceTree = "<group>"; };
 		4B88D0871E5E8ADE008A69BC /* GCMediaLibraryLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCMediaLibraryLoader.swift; sourceTree = "<group>"; };
 		4B88D08A1E5E90B4008A69BC /* FootprintAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FootprintAnnotation.swift; path = MAMModels/FootprintAnnotation.swift; sourceTree = "<group>"; };
@@ -191,7 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				4B2E3D641E5EE031003A913B /* MAMSettingManager.swift */,
-				4B88D0821E5E8A6D008A69BC /* MediaGroupAnnotation.swift */,
+				4B88D0821E5E8A6D008A69BC /* MediaInfoGroupAnnotation.swift */,
 				4B88D08A1E5E90B4008A69BC /* FootprintAnnotation.swift */,
 			);
 			name = MAMModels;
@@ -396,7 +396,7 @@
 				4B8FB5B11E554EFB00400F58 /* MacAlbumMaps.xcdatamodeld in Sources */,
 				4B88D08B1E5E90B4008A69BC /* FootprintAnnotation.swift in Sources */,
 				4B88D0891E5E8ADE008A69BC /* GCMediaLibraryLoader.swift in Sources */,
-				4B88D0831E5E8A6D008A69BC /* MediaGroupAnnotation.swift in Sources */,
+				4B88D0831E5E8A6D008A69BC /* MediaInfoGroupAnnotation.swift in Sources */,
 				4B8FB5AC1E554EFB00400F58 /* AppDelegate.swift in Sources */,
 				4B76B3391E567CD2003BED65 /* MediaMapVC.swift in Sources */,
 				4B339BD71E5C131F00401B0C /* CoordinateInfo+AlecrimCoreDataAttributes.swift in Sources */,

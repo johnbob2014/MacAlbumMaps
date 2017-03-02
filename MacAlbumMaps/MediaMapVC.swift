@@ -10,28 +10,94 @@ import Cocoa
 import MapKit
 import MediaLibrary
 
-class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOutlineViewDataSource{
+class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOutlineViewDataSource,NSTabViewDelegate{
     
     // MARK: - 属性
     @IBOutlet var locationTreeController: NSTreeController!
     
     @IBOutlet weak var mainMapView: MKMapView!
     
-    
-    
-    
-    
-    @IBOutlet weak var imageView: NSImageView!
-    var mediaURLsFromSelectedMediaGroupAnnotation = [URL]()
-    var indexOfCurrentImage = 0
-    
     let mediaLibraryLoader = GCMediaLibraryLoader()
     
     var mapBaseMode: MapBaseMode = MapBaseMode.Moment
     
-    var addedIDAnnotations = [MKAnnotation]()
-    var addedMediaGroupAnnotations = [MediaGroupAnnotation]()
-    var addedFootprintAnnotations = [FootprintAnnotation]()
+    /// 当前添加的、用于导航的 MKAnnotation数组
+    var currentIDAnnotations = [MKAnnotation]()
+    var currentMediaInfoGroupAnnotations = [MediaInfoGroupAnnotation]()
+    var currentFootprintAnnotations = [FootprintAnnotation]()
+    
+    /// 当前MKAnnotation序号 
+    /// ☆带属性观测器的核心属性
+    var indexOfCurrentAnnotation = 0{
+        didSet{
+            if indexOfCurrentAnnotation >= 0 && indexOfCurrentAnnotation < currentIDAnnotations.count{
+                
+                // 显示序号
+                self.indexOfCurrentAnnotationLabel.stringValue = "\(self.indexOfCurrentAnnotation + 1)/\(self.currentIDAnnotations.count)"
+                
+                // ☆移动地图
+                let annotation = self.currentIDAnnotations[indexOfCurrentAnnotation]
+                self.mainMapView.setCenter(annotation.coordinate, animated: false)
+                self.mainMapView.selectAnnotation(annotation, animated: true)
+                
+                // 如果是时刻模式，添加直线路线
+                if self.mapBaseMode == MapBaseMode.Moment {
+                    if self.currentIDAnnotations.count == 2{
+                        self.addLineOverlays(annotations: self.currentIDAnnotations)
+                    }else if self.currentIDAnnotations.count > 2{
+                        if indexOfCurrentAnnotation == 0{
+                            self.addLineOverlays(annotations: [currentIDAnnotations[0],currentIDAnnotations[1]])
+                        }else if indexOfCurrentAnnotation == self.currentIDAnnotations.count - 1{
+                            self.addLineOverlays(annotations: [currentIDAnnotations[self.currentIDAnnotations.count - 2],currentIDAnnotations[self.currentIDAnnotations.count - 1]])
+                        }else{
+                            self.addLineOverlays(annotations: [currentIDAnnotations[indexOfCurrentAnnotation - 1],currentIDAnnotations[indexOfCurrentAnnotation],currentIDAnnotations[indexOfCurrentAnnotation + 1]])
+                        }
+                    }
+                }
+                
+            }else{
+                indexOfCurrentAnnotation = oldValue
+            }
+        }
+    }
+    
+    /// 当前 MediaInfoGroupAnnotation 的 MediaInfo数组
+    var currentMediaInfos = [MediaInfo](){
+        didSet{
+            self.indexOfCurrentMediaInfo = 0
+        }
+    }
+    
+    /// 当前MediaInfo序号
+    /// ☆带属性观测器的核心属性
+    var indexOfCurrentMediaInfo = 0{
+        didSet{
+            if indexOfCurrentMediaInfo >= 0 && indexOfCurrentMediaInfo < self.currentMediaInfos.count {
+                let currentMediaInfo = self.currentMediaInfos[indexOfCurrentMediaInfo]
+                
+                // 显示MediaInfo序号和信息
+                var stringValue = "\(indexOfCurrentMediaInfo + 1)/\(self.currentMediaInfos.count)\n"
+                stringValue += currentMediaInfo.detailInfomation
+                
+                self.currentMediaInfoLabel.stringValue = stringValue
+                
+                // 显示MediaInfo缩略图或原图
+                if let thumbnailURL = URL.init(string: currentMediaInfo.thumbnailURLString!){
+                    self.imageView.image = NSImage.init(contentsOf:thumbnailURL)
+                }else if let imageURL = URL.init(string: currentMediaInfo.urlString!){
+                    self.imageView.image = NSImage.init(contentsOf:imageURL)
+                }
+                
+                // 如果是影片
+                if currentMediaInfo.contentType == kUTTypeQuickTimeMovie as String{
+                    
+                }
+                
+            }else{
+                indexOfCurrentMediaInfo = oldValue
+            }
+        }
+    }
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
@@ -63,11 +129,17 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     }
     
     private func initControls(){
+        mapModeTabView.delegate = self
+        
         self.startDatePicker.dateValue = Date.init(timeIntervalSinceNow: -7*24*60*60)
         self.endDatePicker.dateValue = Date.init(timeIntervalSinceNow: 0)
         self.mergeDistanceForMomentTF.stringValue = "200"
         
-        rootTreeNode = MAMCoreDataManager.placemarkHierarchicalInfoTreeNode(mediaInfos: appContext.mediaInfos.sorted(by: { _,_ in true }))
+        let sortedMediaInfos = appContext.mediaInfos.sorted{ (infoA, infoB) -> Bool in
+            infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
+        }
+
+        rootTreeNode = MAMCoreDataManager.placemarkHierarchicalInfoTreeNode(mediaInfos: sortedMediaInfos)
         self.locationOutlineView.reloadData()
         
     }
@@ -87,6 +159,23 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     
     // MARK: - 左侧视图 Left View
     
+    // MARK: - 主控TabView
+    @IBOutlet weak var mapModeTabView: NSTabView!
+    func tabView(_ tabView: NSTabView, didSelect tabViewItem: NSTabViewItem?) {
+        if tabViewItem != nil{
+            let tabIndex = tabView.indexOfTabViewItem(tabViewItem!)
+            
+            switch tabIndex {
+            case 0:
+                mapBaseMode = MapBaseMode.Moment
+            case 1:
+                mapBaseMode = MapBaseMode.Location
+            default:
+                break
+            }
+        }
+    }
+    
     // MARK: - 左侧时刻选项栏
     @IBOutlet weak var startDatePicker: NSDatePicker!
     @IBOutlet weak var endDatePicker: NSDatePicker!
@@ -94,7 +183,6 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     @IBOutlet weak var momentBtn: NSButton!
 
     @IBAction func momentBtnTD(_ sender: NSButton) {
-        self.mainMapView.removeAnnotations(self.mainMapView.annotations)
         
         let filteredMediaInfos = appContext.mediaInfos.filter { (info) -> NSPredicate in
             info.creationDate.isBetween(self.startDatePicker.dateValue..<self.endDatePicker.dateValue)
@@ -102,7 +190,23 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
         }
         
-        self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: MapBaseMode.Location,mergeDistance: 200)
+        self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: mapBaseMode,mergeDistance: 200)
+    }
+    
+    @IBAction func locationBtnTD(_ sender: NSButton) {
+        if let item = locationOutlineView.item(atRow: locationOutlineView.selectedRow){
+            let tn = item as! GCTreeNode
+            
+            let filteredMediaInfos = appContext.mediaInfos.filter {$0.coordinateInfo.localizedPlaceString_Placemark.contains(tn.title)}.sorted { (infoA, infoB) -> Bool in
+                    infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
+            }
+            
+            self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: mapBaseMode,mergeDistance: 200)
+
+            
+            //tn.title
+        }
+        
     }
     
     
@@ -171,47 +275,48 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
 
     // MARK: - 右侧视图 Right View
     
-    
+    // MARK: - 右侧Annotation序号
+    @IBOutlet weak var indexOfCurrentAnnotationLabel: NSTextField!
     
     // MARK: - 右侧导航按钮 Navigation
+    var isPlaying = false
+    var playTimer: Timer?
+    
     @IBAction func firstBtnTD(_ sender: NSButton) {
-        if let first = self.mainMapView.annotations.first{
-            self.mainMapView.setCenter(first.coordinate, animated: false)
-            self.mainMapView.selectAnnotation(first, animated: true)
-        }
-        
+        self.indexOfCurrentAnnotation = 0
     }
     
     @IBAction func previousBtnTD(_ sender: NSButton) {
+        self.indexOfCurrentAnnotation -= 1
     }
     
     @IBAction func playBtnTD(_ sender: NSButton) {
+        
     }
     
     @IBAction func nextBtnTD(_ sender: NSButton) {
+        self.indexOfCurrentAnnotation += 1
     }
     
     @IBAction func lastBtnTD(_ sender: NSButton) {
+        self.indexOfCurrentAnnotation = self.currentIDAnnotations.count - 1
     }
     
     // MARK: - 右侧底部图片视图 Right Bottom Left Image View
+    
+    @IBOutlet weak var imageView: NSImageView!
+    
     @IBAction func previousImageBtnTD(_ sender: NSButton) {
-        self.indexOfCurrentImage -= 1
-        if self.indexOfCurrentImage >= 0 {
-            self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation[self.indexOfCurrentImage])
-        }else{
-            self.indexOfCurrentImage = 0
-        }
+        self.indexOfCurrentMediaInfo -= 1
     }
     
     @IBAction func nextImageBtnTD(_ sender: NSButton) {
-        self.indexOfCurrentImage += 1
-        if self.indexOfCurrentImage < mediaURLsFromSelectedMediaGroupAnnotation.count {
-            self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation[self.indexOfCurrentImage])
-        }else{
-            self.indexOfCurrentImage = mediaURLsFromSelectedMediaGroupAnnotation.count - 1
-        }
+        self.indexOfCurrentMediaInfo += 1
     }
+    
+    // MARK: - 右侧底部MediaInfo信息视图
+    @IBOutlet weak var currentMediaInfoLabel: NSTextField!
+    
     
     // MARK: - 相册地图核心方法
     
@@ -244,14 +349,14 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             return
         }
         
-        self.mainMapView.removeAnnotations(self.addedIDAnnotations)
-        self.addedMediaGroupAnnotations = []
-        self.addedFootprintAnnotations = []
+        self.mainMapView.removeAnnotations(self.currentIDAnnotations)
+        self.currentMediaInfoGroupAnnotations = []
+        self.currentFootprintAnnotations = []
         
         for (groupIndex,currentGroup) in groupArray!.enumerated() {
             //print("groupIndex: \(groupIndex)")
             
-            let mediaGroupAnno = MediaGroupAnnotation.init()
+            let mediaGroupAnno = MediaInfoGroupAnnotation.init()
             let footprintAnno = FootprintAnnotation.init()
             
             for (mediaInfoIndex,mediaObject) in currentGroup.enumerated() {
@@ -259,12 +364,8 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
                 let mediaInfo = mediaObject as! MediaInfo
                 let creationDate = mediaInfo.creationDate as! Date
                 
-                // 添加ID
-                mediaGroupAnno.mediaIdentifiers.append(mediaInfo.identifier!)
-                
-                if let urlString = mediaInfo.urlString{
-                    mediaGroupAnno.mediaURLs.append(URL.init(string: urlString)!)
-                }
+                // 添加MediaInfo
+                mediaGroupAnno.mediaInfos.append(mediaInfo)
                 
                 if mediaInfoIndex == 0 {
                     // 该组第1张照片
@@ -303,22 +404,24 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             self.mainMapView.addAnnotation(mediaGroupAnno)
             
             // 更新数组
-            self.addedMediaGroupAnnotations.append(mediaGroupAnno)
-            self.addedFootprintAnnotations.append(footprintAnno)
+            self.currentMediaInfoGroupAnnotations.append(mediaGroupAnno)
+            self.currentFootprintAnnotations.append(footprintAnno)
         }
+        
+        self.currentIDAnnotations = self.currentMediaInfoGroupAnnotations
+        self.mainMapView.showAnnotations(self.currentIDAnnotations, animated: true)
+        self.mainMapView.selectAnnotation(self.currentIDAnnotations.first!, animated: true)
         
         // 添加
         if mapBaseMode == MapBaseMode.Moment {
-            self.addLineOverlays(annotations: self.addedMediaGroupAnnotations)
+            //self.addLineOverlays(annotations: self.currentIDAnnotations)
         }else if mapBaseMode == MapBaseMode.Location{
-            self.addCircleOverlays(annotations: self.addedMediaGroupAnnotations, radius: mergeDistance)
+            self.addCircleOverlays(annotations: self.currentIDAnnotations, radius: mergeDistance / 2.0)
         }
         
-        self.mainMapView.showAnnotations(self.mainMapView.annotations, animated: true)
-        self.mainMapView.selectAnnotation(self.mainMapView.annotations.first!, animated: true)
     }
     
-    func addLineOverlays(annotations: [MKAnnotation]) {
+    func addLineOverlays(annotations: [MKAnnotation],fixedArrowLength: CLLocationDistance = 0.0) {
         self.mainMapView.removeOverlays(self.mainMapView.overlays)
         
         if annotations.count < 2 {
@@ -333,7 +436,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         for (index,anno) in annotations.enumerated() {
             if index >= 1 {
                 let polyline = MediaMapVC.createLineMKPolyline(startCoordinate: previousCoord, endCoordinate: anno.coordinate)
-                let polygon = MediaMapVC.createArrowMKPolygon(startCoordinate: previousCoord, endCoordinate: anno.coordinate)
+                let polygon = MediaMapVC.createArrowMKPolygon(startCoordinate: previousCoord, endCoordinate: anno.coordinate ,fixedArrowLength: 2000)
                 
                 self.mainMapView.addOverlays([polyline,polygon])
                 
@@ -349,14 +452,14 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         return MKPolyline.init(coordinates: coordinates, count: 2)
     }
     
-    class func createArrowMKPolygon(startCoordinate:CLLocationCoordinate2D,endCoordinate:CLLocationCoordinate2D) -> MKPolyline {
+    class func createArrowMKPolygon(startCoordinate:CLLocationCoordinate2D,endCoordinate:CLLocationCoordinate2D,fixedArrowLength: CLLocationDistance = 0.0) -> MKPolyline {
         let start_MP: MKMapPoint = MKMapPointForCoordinate(startCoordinate)
         let end_MP: MKMapPoint = MKMapPointForCoordinate(endCoordinate)
         var x_MP: MKMapPoint = MKMapPoint.init()
         var y_MP = x_MP
         var z_MP = x_MP
         
-        let arrowLength = MKMetersBetweenMapPoints(start_MP, end_MP)
+        let arrowLength = fixedArrowLength == 0 ? MKMetersBetweenMapPoints(start_MP, end_MP) : fixedArrowLength
         
         let z_radian = atan2(end_MP.x - start_MP.x, end_MP.y - start_MP.y)
         z_MP.x = end_MP.x - arrowLength * 0.75 * sin(z_radian);
@@ -392,16 +495,14 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
-        if annotation is MediaGroupAnnotation {
+        if annotation is MediaInfoGroupAnnotation {
             let pinAV = MKPinAnnotationView.init(annotation: annotation, reuseIdentifier: "pinAV")
-            pinAV.pinTintColor = NSColor.blue
+            pinAV.pinTintColor = NSColor.green.withAlphaComponent(0.6)
             pinAV.canShowCallout = true
             
-            let mediaGroupAnno = annotation as! MediaGroupAnnotation
-            if let mediaInfo = appContext.mediaInfos.first(where: { (info) -> Bool in
-                info.identifier == mediaGroupAnno.mediaIdentifiers.first!
-            }){
-                //print("Add a MediaGroupAnnotation")
+            let mediaGroupAnno = annotation as! MediaInfoGroupAnnotation
+            if let mediaInfo = mediaGroupAnno.mediaInfos.first{
+                //print("Add a MediaInfoGroupAnnotation")
                 let imageView = NSImageView.init(frame: NSRect.init(x: 0, y: 0, width: 80, height: 80))
                 //imageView.layer?.backgroundColor = NSColor.black.cgColor
                 imageView.image = NSImage.init(contentsOf: URL.init(string: mediaInfo.thumbnailURLString!)!)
@@ -431,8 +532,8 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         }else if overlay is MKCircle {
             let circleRenderer = MKCircleRenderer.init(overlay: overlay)
             circleRenderer.lineWidth = 1
-            circleRenderer.fillColor = NSColor.green
-            circleRenderer.strokeColor = NSColor.red
+            circleRenderer.fillColor = NSColor.green.withAlphaComponent(0.4)
+            circleRenderer.strokeColor = NSColor.green.withAlphaComponent(0.6)
             return circleRenderer
         }else {
             return MKOverlayRenderer.init(overlay: overlay)
@@ -440,13 +541,14 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let currentSelectedAnnotationIndex = self.currentIDAnnotations.index(where: { $0 === view.annotation }){
+            self.indexOfCurrentAnnotation = currentSelectedAnnotationIndex.hashValue
+        }
+        
         if view is MKPinAnnotationView {
-            if view.annotation is MediaGroupAnnotation{
-                let mediaGroupAnno = view.annotation as! MediaGroupAnnotation
-                mediaURLsFromSelectedMediaGroupAnnotation = mediaGroupAnno.mediaURLs
-                
-                self.imageView.image = NSImage.init(contentsOf: mediaURLsFromSelectedMediaGroupAnnotation.first!)
-                self.indexOfCurrentImage = 0
+            if view.annotation is MediaInfoGroupAnnotation{
+                let mediaGroupAnno = view.annotation as! MediaInfoGroupAnnotation
+                self.currentMediaInfos = mediaGroupAnno.mediaInfos
             }
         }
     }

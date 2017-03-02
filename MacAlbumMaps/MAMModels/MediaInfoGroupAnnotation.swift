@@ -1,5 +1,5 @@
 //
-//  MediaGroupAnnotation.swift
+//  MediaInfoGroupAnnotation.swift
 //  MacAlbumMaps
 //
 //  Created by BobZhang on 2017/2/23.
@@ -9,18 +9,15 @@
 import Cocoa
 import MapKit
 
-class MediaGroupAnnotation: NSObject , MKAnnotation{
+class MediaInfoGroupAnnotation: NSObject , MKAnnotation{
     
     // MARK: - Properties
     
     /// 必需，location，座标为WGS84编码格式
     var location : CLLocation = CLLocation.init(latitude: 0.0, longitude: 0.0)
     
-    /// 必需，Media的identifier数组
-    var mediaIdentifiers = [String]()
-    
-    /// 必需，Media的URL数组
-    var mediaURLs = [URL]()
+    /// 必需，MediaInfo数组
+    var mediaInfos = [MediaInfo]()
     
     /// 可选，标题
     var annoTitle = ""
@@ -31,7 +28,7 @@ class MediaGroupAnnotation: NSObject , MKAnnotation{
     /// 只读，计算属性，返回Media的数量
     var mediaCount : Int{
         get{
-            return self.mediaIdentifiers.count
+            return self.mediaInfos.count
         }
     }
     

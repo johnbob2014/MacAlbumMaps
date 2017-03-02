@@ -13,11 +13,8 @@ class GCTreeNode: NSObject {
     
     /// 父节点
     var parent: GCTreeNode?{
-        get{
-            return self.parent
-        }
-        set{
-            if let newParent = newValue{
+        didSet{
+            if let newParent = parent{
                 self.tag = newParent.tag + 1
             }
         }
