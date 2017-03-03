@@ -19,6 +19,13 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     
     let mediaLibraryLoader = GCMediaLibraryLoader()
     
+    
+    var indexOfTabViewItem = 0{
+        didSet{
+            
+        }
+    }
+    
     var mapBaseMode: MapBaseMode = MapBaseMode.Moment
     
     /// 当前添加的、用于导航的 MKAnnotation数组
@@ -133,7 +140,9 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         
         self.startDatePicker.dateValue = Date.init(timeIntervalSinceNow: -7*24*60*60)
         self.endDatePicker.dateValue = Date.init(timeIntervalSinceNow: 0)
-        self.mergeDistanceForMomentTF.stringValue = "200"
+        
+        mergeDistanceForMomentTF.stringValue = "200"
+        mergeDistanceForLocationTF.stringValue = "1000"
         
         let sortedMediaInfos = appContext.mediaInfos.sorted{ (infoA, infoB) -> Bool in
             infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
@@ -164,15 +173,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     func tabView(_ tabView: NSTabView, didSelect tabViewItem: NSTabViewItem?) {
         if tabViewItem != nil{
             let tabIndex = tabView.indexOfTabViewItem(tabViewItem!)
-            
-            switch tabIndex {
-            case 0:
-                mapBaseMode = MapBaseMode.Moment
-            case 1:
-                mapBaseMode = MapBaseMode.Location
-            default:
-                break
-            }
+            indexOfTabViewItem = tabIndex
         }
     }
     
@@ -180,37 +181,10 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     @IBOutlet weak var startDatePicker: NSDatePicker!
     @IBOutlet weak var endDatePicker: NSDatePicker!
     @IBOutlet weak var mergeDistanceForMomentTF: NSTextField!
-    @IBOutlet weak var momentBtn: NSButton!
-
-    @IBAction func momentBtnTD(_ sender: NSButton) {
-        
-        let filteredMediaInfos = appContext.mediaInfos.filter { (info) -> NSPredicate in
-            info.creationDate.isBetween(self.startDatePicker.dateValue..<self.endDatePicker.dateValue)
-        }.sorted { (infoA, infoB) -> Bool in
-            infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
-        }
-        
-        self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: mapBaseMode,mergeDistance: 200)
-    }
-    
-    @IBAction func locationBtnTD(_ sender: NSButton) {
-        if let item = locationOutlineView.item(atRow: locationOutlineView.selectedRow){
-            let tn = item as! GCTreeNode
-            
-            let filteredMediaInfos = appContext.mediaInfos.filter {$0.coordinateInfo.localizedPlaceString_Placemark.contains(tn.title)}.sorted { (infoA, infoB) -> Bool in
-                    infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
-            }
-            
-            self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: mapBaseMode,mergeDistance: 200)
-
-            
-            //tn.title
-        }
-        
-    }
-    
     
     // MARK: - 左侧地址选项栏
+    @IBOutlet weak var mergeDistanceForLocationTF: NSTextField!
+    
     // MARK: - 列表视图 
     @IBOutlet weak var locationOutlineView: NSOutlineView!
     var rootTreeNode = GCTreeNode()
@@ -263,6 +237,50 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         return false
     }
     
+    // MARK: - 左侧主控按钮
+    @IBAction func goBtnTD(_ sender: NSButton) {
+        var filteredMediaInfos = [MediaInfo]()
+        
+        switch indexOfTabViewItem {
+        case 0:
+            // 时刻模式
+            filteredMediaInfos = appContext.mediaInfos.filter { $0.creationDate.isBetween(self.startDatePicker.dateValue..<self.endDatePicker.dateValue) }.sorted { (infoA, infoB) -> Bool in
+                    infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
+            }
+            
+            var mergeDistance = NSString.init(string: mergeDistanceForMomentTF.stringValue).doubleValue
+            if mergeDistance == 0{
+                mergeDistance = 200
+            }
+            self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode:MapBaseMode.Moment,mergeDistance: mergeDistance)
+            
+        case 1:
+            // 地点模式
+            if let item = locationOutlineView.item(atRow: locationOutlineView.selectedRow){
+                let tn = item as! GCTreeNode
+                
+                let filteredMediaInfos = appContext.mediaInfos.filter { $0.coordinateInfo.localizedPlaceString_Placemark.contains(tn.title) }.sorted { (infoA, infoB) -> Bool in
+                    infoA.creationDate?.compare(infoB.creationDate as! Date) == ComparisonResult.orderedAscending
+                }
+                
+                var mergeDistance = NSString.init(string: mergeDistanceForLocationTF.stringValue).doubleValue
+                if mergeDistance == 0{
+                    mergeDistance = 1000
+                }
+                self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode: MapBaseMode.Location,mergeDistance: mergeDistance)
+            }
+            
+        default:
+            // 浏览模式
+            break
+        }
+    }
+    
+    @IBAction func locationBtnTD(_ sender: NSButton) {
+        
+    }
+    
+
     // MARK: - 左侧地址信息解析显示
     @IBOutlet weak var placemarkInfoTF: NSTextField!
     func didReceiveNotification(noti: NSNotification) {
@@ -402,6 +420,11 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             
             // 将该点添加到地图
             self.mainMapView.addAnnotation(mediaGroupAnno)
+            
+            if groupIndex == 0 {
+                let span = MKCoordinateSpan.init(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                mainMapView.setRegion(MKCoordinateRegion.init(center: mediaGroupAnno.coordinate, span: span), animated: true)
+            }
             
             // 更新数组
             self.currentMediaInfoGroupAnnotations.append(mediaGroupAnno)
