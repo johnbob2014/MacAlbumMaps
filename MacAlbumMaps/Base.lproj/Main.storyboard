@@ -703,8 +703,8 @@
                                                         <font key="font" metaFont="system"/>
                                                         <tabViewItems>
                                                             <tabViewItem label="Moment" identifier="1" id="CGq-OA-nh7">
-                                                                <view key="view" misplaced="YES" id="kIz-Rd-hVe">
-                                                                    <rect key="frame" x="10" y="33" width="294" height="451"/>
+                                                                <view key="view" id="kIz-Rd-hVe">
+                                                                    <rect key="frame" x="10" y="33" width="294" height="449"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HAv-tT-fSW">
@@ -983,16 +983,16 @@
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xe2-VI-vMi">
-                                                                <rect key="frame" x="0.0" y="0.0" width="300" height="153"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="300" height="154"/>
                                                                 <clipView key="contentView" id="lWx-ba-Aqx">
-                                                                    <rect key="frame" x="1" y="1" width="283" height="151"/>
+                                                                    <rect key="frame" x="1" y="1" width="283" height="152"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textView importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="LCa-6x-mo0">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="283" height="151"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="283" height="152"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                                            <size key="minSize" width="283" height="151"/>
+                                                                            <size key="minSize" width="283" height="152"/>
                                                                             <size key="maxSize" width="463" height="10000000"/>
                                                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         </textView>
@@ -1004,7 +1004,7 @@
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
                                                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="iC2-C1-n41">
-                                                                    <rect key="frame" x="284" y="1" width="15" height="151"/>
+                                                                    <rect key="frame" x="284" y="1" width="15" height="152"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
                                                             </scrollView>
@@ -1016,12 +1016,12 @@
                                                             <constraint firstAttribute="bottom" secondItem="Xe2-VI-vMi" secondAttribute="bottom" id="wBU-YS-aLT"/>
                                                         </constraints>
                                                     </customView>
-                                                    <customView misplaced="YES" id="8bT-na-nHO" userLabel="Left Bottom Custom View">
+                                                    <customView id="8bT-na-nHO" userLabel="Left Bottom Custom View">
                                                         <rect key="frame" x="0.0" y="684" width="300" height="84"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="y40-1f-zwn">
-                                                                <rect key="frame" x="-2" y="2" width="304" height="83"/>
+                                                                <rect key="frame" x="-2" y="1" width="304" height="83"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="83" id="OG1-mw-Qwv"/>
                                                                 </constraints>

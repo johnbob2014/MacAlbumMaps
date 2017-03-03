@@ -26,7 +26,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         }
     }
     
-    var mapBaseMode: MapBaseMode = MapBaseMode.Moment
+    //var mapBaseMode: MapBaseMode = MapBaseMode.Moment
     
     /// 当前添加的、用于导航的 MKAnnotation数组
     var currentIDAnnotations = [MKAnnotation]()
@@ -48,7 +48,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
                 self.mainMapView.selectAnnotation(annotation, animated: true)
                 
                 // 如果是时刻模式，添加直线路线
-                if self.mapBaseMode == MapBaseMode.Moment {
+                if indexOfTabViewItem == 0 {
                     if self.currentIDAnnotations.count == 2{
                         self.addLineOverlays(annotations: self.currentIDAnnotations)
                     }else if self.currentIDAnnotations.count > 2{
@@ -252,6 +252,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             if mergeDistance == 0{
                 mergeDistance = 200
             }
+            
             self.showMediaInfos(mediaInfos: filteredMediaInfos,mapBaseMode:MapBaseMode.Moment,mergeDistance: mergeDistance)
             
         case 1:
@@ -459,7 +460,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         for (index,anno) in annotations.enumerated() {
             if index >= 1 {
                 let polyline = MediaMapVC.createLineMKPolyline(startCoordinate: previousCoord, endCoordinate: anno.coordinate)
-                let polygon = MediaMapVC.createArrowMKPolygon(startCoordinate: previousCoord, endCoordinate: anno.coordinate ,fixedArrowLength: 2000)
+                let polygon = MediaMapVC.createArrowMKPolygon(startCoordinate: previousCoord, endCoordinate: anno.coordinate ,fixedArrowLength: fixedArrowLength)
                 
                 self.mainMapView.addOverlays([polyline,polygon])
                 
@@ -520,7 +521,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         
         if annotation is MediaInfoGroupAnnotation {
             let pinAV = MKPinAnnotationView.init(annotation: annotation, reuseIdentifier: "pinAV")
-            pinAV.pinTintColor = NSColor.green.withAlphaComponent(0.6)
+            pinAV.pinTintColor = DynamicColor.randomColor(in: DynamicColor.preferredAnnotationViewColors)
             pinAV.canShowCallout = true
             
             let mediaGroupAnno = annotation as! MediaInfoGroupAnnotation
@@ -541,22 +542,24 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         
     }
     
+    var lastRandomColor = DynamicColor.flatRedColor
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        lastRandomColor = DynamicColor.randomColor(in: DynamicColor.preferredOverlayColors)
         if overlay is MKPolyline {
             let polylineRenderer = MKPolylineRenderer.init(overlay: overlay)
             polylineRenderer.lineWidth = 2
-            polylineRenderer.strokeColor = NSColor.red
+            polylineRenderer.strokeColor = lastRandomColor.withAlphaComponent(0.6)
             return polylineRenderer
         }else if overlay is MKPolygon{
             let polygonRenderer = MKPolygonRenderer.init(overlay: overlay)
             polygonRenderer.lineWidth = 1
-            polygonRenderer.strokeColor = NSColor.red
+            polygonRenderer.strokeColor = lastRandomColor.withAlphaComponent(0.6)
             return polygonRenderer
         }else if overlay is MKCircle {
             let circleRenderer = MKCircleRenderer.init(overlay: overlay)
             circleRenderer.lineWidth = 1
-            circleRenderer.fillColor = NSColor.green.withAlphaComponent(0.4)
-            circleRenderer.strokeColor = NSColor.green.withAlphaComponent(0.6)
+            circleRenderer.fillColor = lastRandomColor.withAlphaComponent(0.4)
+            circleRenderer.strokeColor = lastRandomColor.withAlphaComponent(0.6)
             return circleRenderer
         }else {
             return MKOverlayRenderer.init(overlay: overlay)
