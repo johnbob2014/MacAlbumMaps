@@ -9,7 +9,7 @@
 import Cocoa
 import MediaLibrary
 
-typealias LoadCompleteHandler = (_ loadedMediaObjects: [MLMediaObject]) -> Void
+typealias LoadCompletionHandler = (_ loadedMediaObjects: [MLMediaObject]) -> Void
 
 public struct MLMediaObjectHiddenAttributeKeys{
     static let contentTypeKey = "contentType"
@@ -47,7 +47,7 @@ class GCMediaLibraryLoader: NSObject {
     private var rootMediaGroupContext = 2
     private var mediaObjectsContext = 3
     
-    public var loadCompleteHandler : LoadCompleteHandler?
+    public var loadCompletionHandler : LoadCompletionHandler?
     //public var validMediaObjects: [MLMediaObject] = []
     
     // MLMediaLibrary instances for loading the photos.
@@ -74,8 +74,7 @@ class GCMediaLibraryLoader: NSObject {
     deinit {
         // Make sure to remove us as an observer before "mediaLibrary" is released.
         self.mediaLibrary.removeObserver(self, forKeyPath: MLMediaLibraryPropertyKeys.mediaSourcesKey, context: &mediaSourcesContext)
-
-                print("removeObserver")
+        print("removeObserver")
     }
     
         
@@ -89,11 +88,11 @@ class GCMediaLibraryLoader: NSObject {
             
             if let mediaSource = self.mediaLibrary.mediaSources?[MLMediaSourcePhotosIdentifier] {
                 self.mediaSource = mediaSource
-                print("MLMediaSourcePhotosIdentifier")
+                print("GCMediaLibraryLoader: MLMediaSourcePhotosIdentifier")
             }
             else if let mediaSource = self.mediaLibrary.mediaSources?[MLMediaSourceiPhotoIdentifier] {
                 self.mediaSource = mediaSource
-                print("MLMediaSourceiPhotoIdentifier")
+                //print("MLMediaSourceiPhotoIdentifier")
             }
             else {
                 // Can't find any media sources.
@@ -129,9 +128,10 @@ class GCMediaLibraryLoader: NSObject {
                 }
             }
             */
+            print("GCMediaLibraryLoader: Load Complete")
             
-            if (self.loadCompleteHandler != nil) {
-                self.loadCompleteHandler!(self.rootMediaGroup.mediaObjects!)
+            if (self.loadCompletionHandler != nil) {
+                self.loadCompletionHandler!(self.rootMediaGroup.mediaObjects!)
             }
             
             // 获取数据后便移除观察

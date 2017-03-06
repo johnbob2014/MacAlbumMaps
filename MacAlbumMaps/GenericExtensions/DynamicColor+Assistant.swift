@@ -274,11 +274,11 @@ public extension DynamicColor {
     class func randomColor(in colors: [DynamicColor]) -> DynamicColor{
         let randomIndex = Int(arc4random()) % colors.count
         let randomColor = colors[randomIndex]
-        print("randomColor: " + randomColor.toHexString())
+        //print("randomColor: " + randomColor.toHexString())
         return randomColor
     }
     
-    class var randomFlatColoer: DynamicColor {
+    class var randomFlatColor: DynamicColor {
         return DynamicColor.randomColor(in: DynamicColor.flatColors)
     }
     

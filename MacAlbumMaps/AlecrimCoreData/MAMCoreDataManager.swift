@@ -232,6 +232,15 @@ class MAMCoreDataManager: NSObject {
         }
         return title as! String
     }
+    
+    /// 从指定的 MLMediaObject数组 中获取数据
+    ///
+    /// - Parameter mediaObjects: MLMediaObject数组
+    class func asyncUpdateCoreData(from mediaObjects:[MLMediaObject]){
+        DispatchQueue.global(qos: .default).async {
+            MAMCoreDataManager.updateCoreData(from: mediaObjects)
+        }
+    }
 
     /// 从指定的 MLMediaObject数组 中获取数据
     ///
@@ -268,9 +277,9 @@ class MAMCoreDataManager: NSObject {
             }
         }
         
-        print(keyArray)
-        
-        print("本次更新照片数量：\(validMediaObjects.count)")
+        if keyArray.count > 0 {
+            print("[MLMediaObject] keyArray:\n\(keyArray)")
+        }
         
         var addCoordinateInfoCount = 0
         var addMediaInfoCount = 0
@@ -321,16 +330,19 @@ class MAMCoreDataManager: NSObject {
             }
         }
         
+        var scanPhotosResult = ""
         do {
             try appContext.save()
-            print("添加结果:")
-            print("New CoordinateInfo Count: \(addCoordinateInfoCount)")
-            print("New MediaInfo Count: \(addMediaInfoCount)")
-            print("Total CoordinateInfo Count: \(appContext.coordinateInfos.count())")
-            print("Total MediaInfo Count: \(appContext.mediaInfos.count())")
+            scanPhotosResult += NSLocalizedString("Scan photos result:", comment: "添加结果:") + "\n"
+            scanPhotosResult += NSLocalizedString("New CoordinateInfo Count:", comment: "新添加座标点数:") + "\(addCoordinateInfoCount)" + "\n"
+            scanPhotosResult += NSLocalizedString("New MediaInfo Count:", comment: "新添加媒体数:") + "\(addMediaInfoCount)" + "\n"
+            scanPhotosResult += NSLocalizedString("Total CoordinateInfo Count:", comment: "总座标点数:") + "\(appContext.coordinateInfos.count())" + "\n"
+            scanPhotosResult += NSLocalizedString("Total MediaInfo Count:", comment: "总媒体数:") + "\(appContext.mediaInfos.count())" + "\n"
         } catch  {
-            print("添加失败!")
+            scanPhotosResult += NSLocalizedString("Failed!", comment: "失败!")
         }
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "App_Running_Info"), object: nil, userInfo: ["Scan_Photos_Result_String":scanPhotosResult])
     }
     
     // MARK: - 地址信息解析工具
@@ -346,7 +358,7 @@ class MAMCoreDataManager: NSObject {
                 // 已经全部解析完成
                 DispatchQueue.main.async {
                     let infoString = NSLocalizedString("Total Coordinate:", comment: "座标点总计：") + "\(total) " + NSLocalizedString("Parsing is complete!", comment: "地址信息已全部解析完成！")
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "Placemark_Is_Updating"), object: nil, userInfo: ["Placemark_InfoString":infoString])
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "App_Running_Info"), object: nil, userInfo: ["Placemark_Updating_Info_String":infoString])
                 }
             }
             
@@ -360,7 +372,7 @@ class MAMCoreDataManager: NSObject {
                     infoString += succeeded ? placemarkString! : NSLocalizedString("Parse failed!", comment: "解析失败！")
                     
                     DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "Placemark_Is_Updating"), object: nil, userInfo: ["Placemark_InfoString":infoString])
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "App_Running_Info"), object: nil, userInfo: ["Placemark_Updating_Info_String":infoString])
                     }
 
                 }
