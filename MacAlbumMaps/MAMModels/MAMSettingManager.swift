@@ -27,5 +27,18 @@ enum MapExtendedMode: Int {
 }
 
 class MAMSettingManager: NSObject {
-
+    /// 是否曾经登陆
+    class var everLaunched: Bool{
+        get{
+            if let ever = NSUserDefaultsController.shared().defaults.value(forKey: "everLaunched"){
+                return ever as! Bool
+            }else{
+                return false
+            }
+        }
+        set{
+            NSUserDefaultsController.shared().defaults.setValue(newValue, forKey: "everLaunched")
+            NSUserDefaultsController.shared().defaults.synchronize()
+        }
+    }
 }

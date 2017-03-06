@@ -337,7 +337,7 @@ class MAMCoreDataManager: NSObject {
             scanPhotosResult += NSLocalizedString("New CoordinateInfo Count:", comment: "新添加座标点数:") + "\(addCoordinateInfoCount)" + "\n"
             scanPhotosResult += NSLocalizedString("New MediaInfo Count:", comment: "新添加媒体数:") + "\(addMediaInfoCount)" + "\n"
             scanPhotosResult += NSLocalizedString("Total CoordinateInfo Count:", comment: "总座标点数:") + "\(appContext.coordinateInfos.count())" + "\n"
-            scanPhotosResult += NSLocalizedString("Total MediaInfo Count:", comment: "总媒体数:") + "\(appContext.mediaInfos.count())" + "\n"
+            scanPhotosResult += NSLocalizedString("Total MediaInfo Count:", comment: "总媒体数:") + "\(appContext.mediaInfos.count())"
         } catch  {
             scanPhotosResult += NSLocalizedString("Failed!", comment: "失败!")
         }

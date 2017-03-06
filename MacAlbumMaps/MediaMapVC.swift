@@ -22,7 +22,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     
     var indexOfTabViewItem = 0{
         didSet{
-            
+            self.clearMainMapView()
         }
     }
     
@@ -30,11 +30,6 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     
     /// 当前添加的、用于导航的 MKAnnotation数组
     var currentIDAnnotations = [MKAnnotation]()
-//        {
-//        didSet{
-//            indexOfCurrentAnnotation = 0
-//        }
-//    }
     var currentMediaInfoGroupAnnotations = [MediaInfoGroupAnnotation]()
     var currentFootprintAnnotations = [FootprintAnnotation]()
     
@@ -100,7 +95,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     var indexOfCurrentMediaInfo = 0{
         didSet{
             if indexOfCurrentMediaInfo >= 0 && indexOfCurrentMediaInfo < self.currentMediaInfos.count {
-                let currentMediaInfo = self.currentMediaInfos[indexOfCurrentMediaInfo]
+                //let currentMediaInfo = self.currentMediaInfos[indexOfCurrentMediaInfo]
                 
                 // 显示MediaInfo序号和信息
                 var stringValue = "\(indexOfCurrentMediaInfo + 1)/\(self.currentMediaInfos.count)\n"
@@ -110,6 +105,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
                 
                 eliminateCheckBtn.state = currentMediaInfo.eliminateThisMedia!.intValue
                 shareCheckBtn.state = currentMediaInfo.actAsThumbnail!.intValue
+                favoriteCoordinateInfoBtn.title = currentMediaInfo.favorite!.boolValue ? "⭐️":"☆"
                 
                 // 显示MediaInfo缩略图或原图
                 if let thumbnailURL = URL.init(string: currentMediaInfo.thumbnailURLString!){
@@ -126,6 +122,13 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             }else{
                 indexOfCurrentMediaInfo = oldValue
             }
+        }
+    }
+    
+    /// 只读，计算属性，当前的MediaInfo
+    var currentMediaInfo: MediaInfo{
+        get{
+            return currentMediaInfos[indexOfCurrentMediaInfo]
         }
     }
     
@@ -156,6 +159,14 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         mainMapView.mapType = MKMapType.standard
         mainMapView.showsScale = true
         //mainMapView.showsUserLocation = true
+        
+        mainMapView.addAnnotations(appContext.coordinateInfos.filter { (info) -> Bool in
+            if let favorite = info.favorite{
+                return favorite.boolValue
+            }else{
+                return false
+            }
+        })
     }
     
     private func initControls(){
@@ -179,7 +190,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         self.locationOutlineView.expandItem(rootTreeNode)
         
         // 初始化statisticalInfoTV
-        statisticalInfoTVString = self.statisticalInfos(mediaInfos: sortedMediaInfos)
+        statisticalInfoTVString = self.calculateStatisticalInfos(mediaInfos: sortedMediaInfos)
         
         //self.goBtn.layer?.backgroundColor = DynamicColor.randomFlatColor.cgColor
     }
@@ -187,12 +198,18 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     private func updateMediaInfos(){
         
         mediaLibraryLoader.loadCompletionHandler = { (loadedMediaObjects: [MLMediaObject]) -> Void in
-            //MAMCoreDataManager.latestModificationDate = Date.init(timeIntervalSince1970: 0.0)
+            MAMCoreDataManager.latestModificationDate = Date.init(timeIntervalSinceNow: 0.0)
+            
             self.goBtn.isEnabled = false
+            self.loadProgressIndicator.isHidden = false
             self.loadProgressIndicator.startAnimation(self)
+            
+            
             MAMCoreDataManager.updateCoreData(from: loadedMediaObjects)
+            
             self.goBtn.isEnabled = true
             self.loadProgressIndicator.stopAnimation(self)
+            self.loadProgressIndicator.isHidden = true
             
             MAMCoreDataManager.asyncUpdatePlacemarks()
         }
@@ -277,6 +294,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     var currentMergeDistance: Double = 0.0
     @IBAction func goBtnTD(_ sender: NSButton) {
         goBtn.isEnabled = false
+        loadProgressIndicator.isHidden = false
         loadProgressIndicator.startAnimation(self)
         
         var filteredMediaInfos = [MediaInfo]()
@@ -318,7 +336,9 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
         
         goBtn.isEnabled = true
         loadProgressIndicator.stopAnimation(self)
+        loadProgressIndicator.isHidden = true
     }
+    
     
     @IBAction func locationBtnTD(_ sender: NSButton) {
         
@@ -354,6 +374,26 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
 
     // MARK: - 右侧视图 Right View
     
+    // MARK: - 地图
+    func clearMainMapView() {
+        mainMapView.removeAnnotations(mainMapView.annotations)
+        mainMapView.removeOverlays(mainMapView.overlays)
+        
+        currentIDAnnotations = []
+        currentMediaInfoGroupAnnotations = []
+        currentFootprintAnnotations = []
+        
+        currentMediaInfos = []
+        
+        mainMapView.addAnnotations(appContext.coordinateInfos.filter { (info) -> Bool in
+            if let favorite = info.favorite{
+                return favorite.boolValue
+            }else{
+                return false
+            }
+        })
+    }
+
     // MARK: - 右侧功能按钮
     @IBAction func mapTypeBtnTD(_ sender: NSButton) {
         if mainMapView.mapType == MKMapType.standard {
@@ -420,7 +460,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     
     @IBOutlet weak var eliminateCheckBtn: NSButton!
     @IBAction func eliminateCheckBtnTD(_ sender: NSButton) {
-        let currentMediaInfo = currentMediaInfos[indexOfCurrentMediaInfo]
+        //let currentMediaInfo = currentMediaInfos[indexOfCurrentMediaInfo]
         currentMediaInfo.eliminateThisMedia = NSNumber.init(value: sender.state == 1 ? true : false)
         try! appContext.save()
     }
@@ -428,15 +468,31 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     @IBOutlet weak var shareCheckBtn: NSButton!
     @IBAction func shareCheckBtnTD(_ sender: NSButton) {
         //print(sender.state)
-        let currentMediaInfo = currentMediaInfos[indexOfCurrentMediaInfo]
+        //let currentMediaInfo = currentMediaInfos[indexOfCurrentMediaInfo]
         currentMediaInfo.actAsThumbnail = NSNumber.init(value: sender.state == 1 ? true : false)
         try! appContext.save()
     }
+    
+    @IBOutlet weak var favoriteCoordinateInfoBtn: NSButton!
+    @IBAction func favoriteCoordinate(_ sender: NSButton) {
+        var isFavorite = (currentMediaInfo.coordinateInfo?.favorite?.boolValue)! ? true : false
+        
+        isFavorite = !isFavorite
+        
+        currentMediaInfo.coordinateInfo?.favorite = NSNumber.init(value: isFavorite)
+        do {
+            try appContext.save()
+            sender.title = isFavorite ? "⭐️" : "☆"
+        } catch {
+            
+        }
+    }
+
 
 
     // MARK: - 相册地图核心方法
     
-    func statisticalInfos(mediaInfos: [MediaInfo]) -> String {
+    func calculateStatisticalInfos(mediaInfos: [MediaInfo]) -> String {
         var statisticalString = ""
         
         let piDic = MAMCoreDataManager.placemarkInfoDictionary(mediaInfos: mediaInfos)
@@ -452,7 +508,7 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
     
     func showMediaInfos(mediaInfos: [MediaInfo],mapBaseMode: MapBaseMode,mergeDistance: CLLocationDistance) {
         
-        statisticalInfoTVString = self.statisticalInfos(mediaInfos: mediaInfos)
+        statisticalInfoTVString = self.calculateStatisticalInfos(mediaInfos: mediaInfos)
         
         var groupArray: Array<Array<GCLocationAnalyserProtocol>>? = nil
         if mapBaseMode == MapBaseMode.Moment {
@@ -701,6 +757,9 @@ class MediaMapVC: NSViewController,MKMapViewDelegate,NSOutlineViewDelegate,NSOut
             }
             
             return pinAV
+        }else if annotation is CoordinateInfo{
+            let starAV = GCStarAnnotationView.init(annotation: annotation, reuseIdentifier: "starAV")
+            return starAV
         }else{
             return nil
         }
